@@ -74,11 +74,11 @@ public class BoardCanvasView extends View implements Observer {
 
         Paint playerNamePaint = new Paint();
         playerNamePaint.setColor(Color.BLACK);
-        canvas.drawRect(new Rect(0, 0, this.width, offsetFromTop), playerNamePaint);
+        canvas.drawRect(new Rect(0, 0, this.width - 2, offsetFromTop), playerNamePaint);
 
         Paint playerTextPaint = new Paint();
 
-        playerTextPaint.setColor(this.playerName.toLowerCase().equals("player") ? Color.GREEN : Color.RED);
+        playerTextPaint.setColor(this.playerName.toLowerCase().equals("player") ? Color.GREEN : Color.MAGENTA);
         playerTextPaint.setTextSize(40);
         canvas.drawText(this.playerName, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
 

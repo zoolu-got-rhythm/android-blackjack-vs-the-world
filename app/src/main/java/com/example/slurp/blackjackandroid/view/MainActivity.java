@@ -30,28 +30,45 @@ public class MainActivity extends AppCompatActivity {
 //        int width = size.x;
 //        int height = size.y;
 
-        final LinearLayout root = findViewById(R.id.root);
+        final LinearLayout cardsLayoutParent = findViewById(R.id.cards_view_parent);
 
 
-
-        ViewTreeObserver vto = root.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        ViewTreeObserver vtoCardsLayoutParent = cardsLayoutParent.getViewTreeObserver();
+        vtoCardsLayoutParent.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
                 //remove listener to ensure only one call is made.
-                root.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                int h = root.getHeight();
-                int w = root.getWidth();
+                cardsLayoutParent.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                int h = cardsLayoutParent.getHeight();
+                int w = cardsLayoutParent.getWidth();
 
-                BoardCanvasView boardCanvasViewComputer = new BoardCanvasView(getApplicationContext(), "computer", w - 240, h / 2);
-                BoardCanvasView boardCanvasViewPlayer = new BoardCanvasView(getApplicationContext(), "player", w - 240, h / 2);
-                root.addView(boardCanvasViewComputer);
-                root.addView(boardCanvasViewPlayer);
+                BoardCanvasView boardCanvasViewComputer = new BoardCanvasView(getApplicationContext(), "computer", w, h / 2);
+                BoardCanvasView boardCanvasViewPlayer = new BoardCanvasView(getApplicationContext(), "player", w, h / 2);
+                cardsLayoutParent.addView(boardCanvasViewComputer);
+                cardsLayoutParent.addView(boardCanvasViewPlayer);
+
+
 
                 //make use of height and width
             }
 
+        });
+
+        final LinearLayout chipsLayoutParent = findViewById(R.id.chips_parent_view);
+        ViewTreeObserver vtoChipsLayoutParent = chipsLayoutParent.getViewTreeObserver();
+
+        vtoChipsLayoutParent.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                chipsLayoutParent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int widthOfChipsLayout = chipsLayoutParent.getWidth();
+                int heightOfChipsLayout = chipsLayoutParent.getHeight();
+
+                ChipsCanvasView chipsCanvasView = new ChipsCanvasView(getApplicationContext(), widthOfChipsLayout, heightOfChipsLayout);
+                chipsLayoutParent.addView(chipsCanvasView);
+
+            }
         });
 
 
