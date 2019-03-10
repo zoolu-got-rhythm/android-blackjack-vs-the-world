@@ -8,7 +8,10 @@ FILES_IN_SRC_DIR="$FOLDER_PATH_SRC/*"
 
 FOLDER_PATH_DEST=$2
 cp $FILES_IN_SRC_DIR $FOLDER_PATH_DEST
-for f in "$FOLDER_PATH_DEST/*"
+echo "folder path dest"
+echo "$FOLDER_PATH_DEST";
+# cd $FOLDER_PATH_DEST
+for f in $FOLDER_PATH_DEST/*
 do
   echo "Processing $f file..."
 
@@ -20,13 +23,10 @@ do
   echo "printing result:"
   # ls $f
   echo "$CAPTURED_DIGIT_IN_FILENAME"
-  if [[ $CAPTURED_DIGIT_IN_FILENAME = [0-9] ]]
+  if [[ $CAPTURED_DIGIT_IN_FILENAME = [0-9]* ]]
   then
     echo "found and replacing digit with number as word"
     case "$CAPTURED_DIGIT_IN_FILENAME" in
-      1 )
-        DIGIT_AS_WORD="one"
-        ;;
       2 )
         DIGIT_AS_WORD="two"
         ;;
@@ -55,7 +55,7 @@ do
         DIGIT_AS_WORD="ten"
         ;;
     esac
-    mv "$f" "${FNAME_WITHOUT_FULL_PATH/$CAPTURED_DIGIT_IN_FILENAME/$DIGIT_AS_WORD}"
+    mv "$f" "${f/$CAPTURED_DIGIT_IN_FILENAME/$DIGIT_AS_WORD}"
   else
     echo "not replacing"
   fi
