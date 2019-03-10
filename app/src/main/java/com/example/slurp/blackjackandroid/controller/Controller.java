@@ -10,7 +10,7 @@ public class Controller{
     private Game model;
     private int betPlaced;
 
-    Controller(Game model){
+    public Controller(Game model){
         this.model = model;
         this.betPlaced = 0;
     }
@@ -87,7 +87,7 @@ public class Controller{
         this.getWinnerAndRestGameIfOver();
     }
 
-    public void placeBet(int betAmount) {
+    private void placeBet(int betAmount) {
         int playerChipsAmount = 0;
         try {
             playerChipsAmount = model.getPlayerByName("player").getChips().getCurrentBalance();

@@ -218,7 +218,7 @@ public class Game extends Observable{
         return theWinner;
     }
 
-    private void notifyView(){
+    public void notifyView(){
         System.out.println("notifying view");
         super.setChanged();
         super.notifyObservers(this);

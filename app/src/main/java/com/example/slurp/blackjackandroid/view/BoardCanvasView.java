@@ -1,14 +1,18 @@
 package com.example.slurp.blackjackandroid.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
 
 import java.util.Observable;
@@ -82,75 +86,28 @@ public class BoardCanvasView extends View implements Observer {
         playerTextPaint.setTextSize(40);
         canvas.drawText(this.playerName, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
 
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ace_of_diamonds);
 
 
 
+        Paint cardShadowPaint = new Paint();
+        cardShadowPaint.setColor(Color.DKGRAY);
+        canvas.drawRoundRect(
+                new RectF(10, offsetFromTop + 20, 350, offsetFromTop + 400 + 10),
+                15,
+                15,
+                cardShadowPaint);
 
-//        Paint redPaint = new Paint();
-//        redPaint.setColor(Color.RED);
-//        Point apple = this.currentGameState.getCurrentApple() != null ?
-//                this.currentGameState.getCurrentApple().getPos() : null;
+        Paint cardBackgroundPaint = new Paint();
+        cardBackgroundPaint.setColor(Color.WHITE);
+        canvas.drawRoundRect(
+                new RectF(20, offsetFromTop + 20, 350, offsetFromTop + 400),
+                15,
+                15,
+                cardBackgroundPaint);
 
-
-//        if(apple != null)
-//            canvas.drawRect(new Rect(apple.x * squareSize,
-//                    apple.y * squareSize, (apple.x * squareSize) + squareSize - 2,
-//                    (apple.y * squareSize) + squareSize - 2), redPaint);
-//
-//
-//        for (Point p : this.currentGameState.getPlayerSnake().getHeadAndBody()) {
-//
-//            if(this.currentGameState.getPlayerSnake().getHeadAndBody().indexOf(p) == 0){
-//                Paint snakeHeadPaint = new Paint();
-//                snakeHeadPaint.setColor(getResources().getColor(R.color.purple));
-//                canvas.drawRect(new Rect(p.x * squareSize,
-//                                p.y * squareSize, (p.x * squareSize) + squareSize - 2,
-//                                (p.y * squareSize) + squareSize -2),
-//                        snakeHeadPaint);
-//
-//            }else{
-//                canvas.drawRect(new Rect(p.x * squareSize,
-//                                p.y * squareSize, (p.x * squareSize) + squareSize - 2,
-//                                (p.y * squareSize) + squareSize - 2),
-//                        this.mPaint);
-//            }
-//        }
-//
-//        if(currentGameState.getGameOver()) {
-//
-//            String gameOver = "GAME OVER";
-//            String tapScreenToPlayAgain = "tap screen to play again";
-//
-//            Paint gameOverPaint = new Paint();
-//            gameOverPaint.setTextSize(100f);
-//            gameOverPaint.setColor(Color.RED);
-//            gameOverPaint.setStyle(Paint.Style.FILL);
-//
-//            Paint tapScreenPaint = new Paint();
-//            tapScreenPaint.setTextSize(50f);
-//            tapScreenPaint.setColor(Color.GREEN);
-//            tapScreenPaint.setStyle(Paint.Style.FILL);
-//
-//            Rect resultGameOver = new Rect();
-//            Rect resultTapScreenToPlayAgain = new Rect();
-//
-//
-//            gameOverPaint.getTextBounds(gameOver, 0, gameOver.length(), resultGameOver);
-//
-//            tapScreenPaint.getTextBounds(tapScreenToPlayAgain, 0, tapScreenToPlayAgain.length(),
-//                    resultTapScreenToPlayAgain);
-//
-//
-//            canvas.drawText(gameOver, (width / 2) - resultGameOver.width() / 2,
-//                    (height / 2) + resultGameOver.height() / 2, gameOverPaint);
-//
-//            canvas.drawText(tapScreenToPlayAgain, (width / 2) - resultTapScreenToPlayAgain.width() / 2,
-//                    ((height / 2) + resultTapScreenToPlayAgain.height() / 2)
-//                            + resultGameOver.height(), tapScreenPaint);
-//
-//
-//        }
-
+        canvas.drawBitmap(bitmap, null,
+                new Rect(20, offsetFromTop + 20, 350, offsetFromTop + 400), null);
 
         super.onDraw(canvas);
     }
