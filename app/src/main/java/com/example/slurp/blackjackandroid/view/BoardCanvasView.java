@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 
 import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
+import com.example.slurp.blackjackandroid.model.blackjack.Player;
+import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
 
+import java.lang.reflect.Field;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -86,6 +89,17 @@ public class BoardCanvasView extends View implements Observer {
         playerTextPaint.setTextSize(40);
         canvas.drawText(this.playerName, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
 
+        Player player = null;
+        try {
+            player = currentGameState.getPlayerByName(this.playerName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for(PlayingCard card : player.getHand().getCards()){
+            String imagePathForCard = EnumToCardPath.imgPathFromRankAndSuitEnums(card.rank, card.suit);
+
+        }
+
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ace_of_diamonds);
 
 
@@ -123,6 +137,17 @@ public class BoardCanvasView extends View implements Observer {
                 invalidate();
             }
         });
+    }
+
+    public static int getResId(String resName, Class<?> c) {
+
+        try {
+            Field idField = c.getDeclaredField(resName);
+            return idField.getInt(idField);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
