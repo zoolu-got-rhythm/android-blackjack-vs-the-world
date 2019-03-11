@@ -22,14 +22,17 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class BoardCanvasView extends View implements Observer {
-    private Game currentGameState;
+    private Game model;
     private android.os.Handler mHandler;
     private Paint mPaint;
     private int width, height;
     private String playerName;
 
-    public BoardCanvasView(Context context, String playerName, int width, int height) {
+    public BoardCanvasView(Game model, Context context, String playerName, int width, int height) {
         super(context);
+        this.model = model;
+        this.model.addObserver(this);
+
         this.mHandler = new android.os.Handler();
 
         this.playerName = playerName;
@@ -91,44 +94,56 @@ public class BoardCanvasView extends View implements Observer {
 
         Player player = null;
         try {
-            player = currentGameState.getPlayerByName(this.playerName);
+            player = this.model.getPlayerByName(this.playerName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for(PlayingCard card : player.getHand().getCards()){
-            String imagePathForCard = EnumToCardPath.imgPathFromRankAndSuitEnums(card.rank, card.suit);
 
+        int cardWidth = 300;
+        int cardHeight = 350;
+        int xOffset = 20;
+        for(PlayingCard card : player.getHand().getCards()){
+
+            // find cardImageResourceId at runtime
+            String imagePathForCard = EnumToCardPath.imgPathFromRankAndSuitEnums(card.rank, card.suit);
+            imagePathForCard = imagePathForCard.substring(0, imagePathForCard.length() - 4); // remove .png extention
+            int cardImageResourceId = getResId(imagePathForCard, R.drawable.class);
+            Log.d("card resource path", imagePathForCard);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), cardImageResourceId);
+
+            Paint cardShadowPaint = new Paint();
+            cardShadowPaint.setColor(Color.DKGRAY);
+            canvas.drawRoundRect(
+                    new RectF(xOffset - 10, offsetFromTop + 10, xOffset + cardWidth - 10, offsetFromTop + cardHeight + 10),
+                    15,
+                    15,
+                    cardShadowPaint);
+
+            Paint cardBackgroundPaint = new Paint();
+            cardBackgroundPaint.setColor(Color.WHITE);
+            canvas.drawRoundRect(
+                    new RectF(xOffset, offsetFromTop, xOffset + cardWidth, offsetFromTop + cardHeight),
+                    15,
+                    15,
+                    cardBackgroundPaint);
+
+            canvas.drawBitmap(bitmap, null,
+                    new Rect(xOffset, offsetFromTop, xOffset + cardWidth, offsetFromTop + cardHeight), null);
+
+            xOffset += 100;
         }
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ace_of_diamonds);
 
 
 
-        Paint cardShadowPaint = new Paint();
-        cardShadowPaint.setColor(Color.DKGRAY);
-        canvas.drawRoundRect(
-                new RectF(10, offsetFromTop + 20, 350, offsetFromTop + 400 + 10),
-                15,
-                15,
-                cardShadowPaint);
 
-        Paint cardBackgroundPaint = new Paint();
-        cardBackgroundPaint.setColor(Color.WHITE);
-        canvas.drawRoundRect(
-                new RectF(20, offsetFromTop + 20, 350, offsetFromTop + 400),
-                15,
-                15,
-                cardBackgroundPaint);
-
-        canvas.drawBitmap(bitmap, null,
-                new Rect(20, offsetFromTop + 20, 350, offsetFromTop + 400), null);
 
         super.onDraw(canvas);
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        this.currentGameState = (Game) observable;
+        this.model = (Game) observable;
 
         this.mHandler.post(new Runnable() {
             @Override

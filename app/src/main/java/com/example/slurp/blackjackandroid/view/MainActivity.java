@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
     private Game model;
     private Controller controller;
-    private Button betButton;
+    private Button betButton, drawCardButton, stickButton;
     private BoardCanvasView boardCanvasViewComputer, boardCanvasViewPlayer;
 
     @Override
@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
         this.controller = new Controller(this.model);
 
         this.model.addObserver(this);
-//        this.model.addObserver(this.boardCanvasViewComputer);
-//        this.model.addObserver(this.boardCanvasViewPlayer);
 
 
         betButton = findViewById(R.id.betBtn);
@@ -53,6 +51,24 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 controller.bet();
             }
         });
+
+        drawCardButton = findViewById(R.id.cardBtn);
+        drawCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                controller.playerDrawCard();
+            }
+        });
+
+        stickButton = findViewById(R.id.stayBtn);
+        stickButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                controller.stay();
+            }
+        });
+
+
 
 
         final LinearLayout cardsLayoutParent = findViewById(R.id.cards_view_parent);
@@ -67,8 +83,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 int h = cardsLayoutParent.getHeight();
                 int w = cardsLayoutParent.getWidth();
 
-                boardCanvasViewComputer = new BoardCanvasView(getApplicationContext(), playerName, w, h / 2);
-                boardCanvasViewPlayer = new BoardCanvasView(getApplicationContext(), computerName, w, h / 2);
+                boardCanvasViewComputer = new BoardCanvasView(model, getApplicationContext(), playerName, w, h / 2);
+                boardCanvasViewPlayer = new BoardCanvasView(model, getApplicationContext(), computerName, w, h / 2);
+
 
                 cardsLayoutParent.addView(boardCanvasViewComputer);
                 cardsLayoutParent.addView(boardCanvasViewPlayer);
@@ -110,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
+       manageBetButtonState();
+       
+    }
+
+    private void manageBetButtonState(){
         if(model.getPlacedBets().size() != 2){
             this.betButton.setTextColor(Color.GREEN);
         }else{
