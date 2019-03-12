@@ -90,7 +90,6 @@ public class BoardCanvasView extends View implements Observer {
 
         playerTextPaint.setColor(this.playerName.toLowerCase().equals("player") ? Color.GREEN : Color.MAGENTA);
         playerTextPaint.setTextSize(40);
-        canvas.drawText(this.playerName, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
 
         Player player = null;
         try {
@@ -98,6 +97,25 @@ public class BoardCanvasView extends View implements Observer {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        String playerNameAndHandValue = this.playerName;
+
+        if(model.isGameOver()){
+
+            if(model.getWinner() == null){
+                playerNameAndHandValue += " DRAW. ";
+            }else if(model.getWinner().getName().equals(this.playerName)){
+                playerNameAndHandValue += " is WINNER. ";
+            }else{
+                playerNameAndHandValue += " is loser. ";
+            }
+        }
+
+        playerNameAndHandValue += " HAND = "+ player.getHand().getBestValue().toString().toLowerCase();
+
+        canvas.drawText(playerNameAndHandValue, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
+
+
 
         int cardWidth = 300;
         int cardHeight = 350;

@@ -41,18 +41,26 @@ public class Controller{
         // game over condition: reset game
         if(playerChipsValue < 3 ){
                 this.model.resetGame(true, 3);
+                return;
         }
+
+        this.model.resetGame(false, 0); // chips value is irrelevant if resetChips bool is false
     }
 
     public void playerDrawCard(){
+        if(model.isGameOver())
+            return;
         System.out.println("execute");
         model.twist(model.getCurrentPlayer());
-        if(model.isGameOver())
-            this.getWinnerAndRestGameIfOver();
+//        if(model.isGameOver())
+//            this.getWinnerAndRestGameIfOver();
     }
 
     // controls how the computer reacts to the player when he sticks
     public void stay(){
+        if(model.isGameOver())
+            return;
+
         model.stick(model.getCurrentPlayer());
         try {
             model.nextPlayer();
@@ -81,13 +89,31 @@ public class Controller{
             System.out.println("looping");
         }
 
+        Player losingPlayer = null;
+        if(!model.isGameOver()){
+            // if not draw remove loser from game
+            for(Player p : model.getPlayersInGame()){
+                if(model.getWinner() != null && !model.getWinner().getName().equals(p.getName())){
+                   losingPlayer = p;
+                }
+            }
 
+            if(losingPlayer != null){
+                model.getPlayersInGame().remove(losingPlayer);
+                model.getPlayersInDeal().remove(losingPlayer);
+            }else{
+                model.setRoundIsOver(true);
+            }
 
-
-        this.getWinnerAndRestGameIfOver();
+        }
+        model.notifyView();
+//        this.getWinnerAndRestGameIfOver();
     }
 
     private void placeBet(int betAmount) {
+        if(model.isGameOver())
+            this.getWinnerAndRestGameIfOver();
+
         int playerChipsAmount = 0;
         try {
             playerChipsAmount = model.getPlayerByName("player").getChips().getCurrentBalance();

@@ -21,6 +21,7 @@ public class Game extends Observable{
     private Deck theDeck;
     private HashMap<Player, Integer> placedBets;
     private final int chipsNeededToWin = 30;
+    private boolean roundIsOver = false;
 
 
 
@@ -44,7 +45,12 @@ public class Game extends Observable{
         placedBets = new HashMap<>();
     }
 
+    public void setRoundIsOver(boolean roundIsOver) {
+        this.roundIsOver = roundIsOver;
+    }
+
     public void resetGame(Boolean resetChips, int chipsValue){ // re-name to new game with player chips in tact
+        roundIsOver = false;
         theDeck=new Deck();
         currentPlayer = players.get(0);
         placedBets = new HashMap<>();
@@ -154,7 +160,7 @@ public class Game extends Observable{
     }
 
     public boolean isGameOver(){
-        return ((playersInGame.size()==1) || (playersInDeal.isEmpty()));
+        return ((playersInGame.size()==1) || (playersInDeal.isEmpty()) || roundIsOver);
     }
 
     public int getNumberOfPlayersInGame() {
@@ -203,6 +209,8 @@ public class Game extends Observable{
             }
         }
 
+        // need to detach this into it's own method
+
         // give chips to winner, remove from loosers
         for(int j = 0; j < playersInGame.size(); j++){
             if(playersInGame.get(j) == theWinner){
@@ -245,5 +253,13 @@ public class Game extends Observable{
 
     public int getChipsNeededToWin() {
         return chipsNeededToWin;
+    }
+
+    public ArrayList<Player> getPlayersInGame() {
+        return playersInGame;
+    }
+
+    public ArrayList<Player> getPlayersInDeal() {
+        return playersInDeal;
     }
 }

@@ -128,11 +128,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
     @Override
     public void update(Observable observable, Object o) {
        manageBetButtonState();
-       
+
     }
 
     private void manageBetButtonState(){
-        if(model.getPlacedBets().size() != 2){
+        if(model.getPlacedBets().size() != 2 || model.isGameOver()){
             this.betButton.setTextColor(Color.GREEN);
         }else{
             this.betButton.setTextColor(Color.RED);
