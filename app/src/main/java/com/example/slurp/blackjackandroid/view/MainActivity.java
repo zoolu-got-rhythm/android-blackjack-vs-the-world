@@ -83,12 +83,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 int h = cardsLayoutParent.getHeight();
                 int w = cardsLayoutParent.getWidth();
 
-                boardCanvasViewComputer = new BoardCanvasView(model, getApplicationContext(), playerName, w, h / 2);
-                boardCanvasViewPlayer = new BoardCanvasView(model, getApplicationContext(), computerName, w, h / 2);
-
+                boardCanvasViewComputer = new BoardCanvasView(model, getApplicationContext(), computerName, w, h / 2);
+                boardCanvasViewPlayer = new BoardCanvasView(model, getApplicationContext(), playerName, w, h / 2);
 
                 cardsLayoutParent.addView(boardCanvasViewComputer);
                 cardsLayoutParent.addView(boardCanvasViewPlayer);
+
+
             }
 
         });

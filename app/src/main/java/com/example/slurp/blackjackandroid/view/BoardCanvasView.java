@@ -132,7 +132,7 @@ public class BoardCanvasView extends View implements Observer {
             Paint cardShadowPaint = new Paint();
             cardShadowPaint.setColor(Color.DKGRAY);
             canvas.drawRoundRect(
-                    new RectF(xOffset - 10, offsetFromTop + 10, xOffset + cardWidth - 10, offsetFromTop + cardHeight + 10),
+                    new RectF(xOffset - 10, (offsetFromTop + 100) + 10, xOffset + cardWidth - 10, (offsetFromTop + 100) + cardHeight + 10),
                     15,
                     15,
                     cardShadowPaint);
@@ -140,13 +140,13 @@ public class BoardCanvasView extends View implements Observer {
             Paint cardBackgroundPaint = new Paint();
             cardBackgroundPaint.setColor(Color.WHITE);
             canvas.drawRoundRect(
-                    new RectF(xOffset, offsetFromTop, xOffset + cardWidth, offsetFromTop + cardHeight),
+                    new RectF(xOffset, (offsetFromTop + 100), xOffset + cardWidth, (offsetFromTop + 100) + cardHeight),
                     15,
                     15,
                     cardBackgroundPaint);
 
             canvas.drawBitmap(bitmap, null,
-                    new Rect(xOffset, offsetFromTop, xOffset + cardWidth, offsetFromTop + cardHeight), null);
+                    new Rect(xOffset, (offsetFromTop + 100), xOffset + cardWidth, (offsetFromTop + 100) + cardHeight), null);
 
             xOffset += 100;
         }
