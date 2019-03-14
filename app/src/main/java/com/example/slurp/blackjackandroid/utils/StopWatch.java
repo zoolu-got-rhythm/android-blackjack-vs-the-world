@@ -35,7 +35,7 @@ public class StopWatch {
             throw new Exception("must resume stopWatch first before can calculate deduced time");
         long deductedTime = 0;
         for(int i = 0; i < this.resumeTimes.size(); i++)
-            deductedTime = this.resumeTimes.get(i).getTime() - this.pauseTimes.get(i).getTime();
+            deductedTime += this.resumeTimes.get(i).getTime() - this.pauseTimes.get(i).getTime();
         return deductedTime;
     }
 
