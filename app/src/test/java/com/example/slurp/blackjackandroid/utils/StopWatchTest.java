@@ -15,12 +15,11 @@ public class StopWatchTest {
         this.stopWatch = new StopWatch();
     }
 
-    @After
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void getTimedElapsed() {
+        final long TIME_DELAY= 2510;
+        final long SLACK_TIME = 50; // 50ms
+
         this.stopWatch.start();
         try {
             Thread.sleep(2540);
@@ -28,8 +27,18 @@ public class StopWatchTest {
             e.printStackTrace();
         }
 
-        this.stopWatch.stop();
-        System.out.println(this.stopWatch.getTimedElapsed());
-        System.out.println(this.stopWatch.toString());
+        try {
+            this.stopWatch.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        long timeElapsed = 0;
+        try {
+            timeElapsed = this.stopWatch.getTimedElapsedInMs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertTrue(timeElapsed >= TIME_DELAY && timeElapsed < TIME_DELAY + SLACK_TIME);
     }
 }
