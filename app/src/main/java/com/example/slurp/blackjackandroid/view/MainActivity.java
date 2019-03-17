@@ -1,8 +1,12 @@
 package com.example.slurp.blackjackandroid.view;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +16,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -28,22 +33,27 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private Game model;
     private Controller controller;
     private Button betButton, drawCardButton, stickButton;
+    private ObjectAnimator betButtonAnimator, drawCardButtonAnimator, stickButtonAnimator;
     private BoardCanvasView boardCanvasViewComputer, boardCanvasViewPlayer;
+    final String playerName = "player", computerName = "house";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final String playerName = "player", computerName = "house";
 
         this.model = new Game(new Player(playerName, 10), new Player(computerName, 100000));
+        this.model.startGameTimer();
         this.controller = new Controller(this.model);
 
         this.model.addObserver(this);
 
 
         betButton = findViewById(R.id.betBtn);
+        betButtonAnimator = this.blinkAnimationEffect(betButton);
+        betButton.setBackgroundColor(Color.DKGRAY);
         betButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
         });
 
         drawCardButton = findViewById(R.id.cardBtn);
+        drawCardButtonAnimator = this.blinkAnimationEffect(drawCardButton);
+        drawCardButton.setBackgroundColor(Color.DKGRAY);
         drawCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
         });
 
         stickButton = findViewById(R.id.stayBtn);
+        stickButtonAnimator = this.blinkAnimationEffect(stickButton);
+        stickButton.setBackgroundColor(Color.DKGRAY);
         stickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,9 +118,34 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 int widthOfChipsLayout = chipsLayoutParent.getWidth();
                 int heightOfChipsLayout = chipsLayoutParent.getHeight();
 
-                ChipsCanvasView chipsCanvasView = new ChipsCanvasView(getApplicationContext(), widthOfChipsLayout, heightOfChipsLayout);
+                ChipsCanvasView chipsCanvasView = new ChipsCanvasView(getApplicationContext(),
+                        model,
+                        playerName,
+                        widthOfChipsLayout,
+                        heightOfChipsLayout);
                 chipsLayoutParent.addView(chipsCanvasView);
 
+            }
+        });
+
+
+        final LinearLayout timerLayoutParent = findViewById(R.id.timer_parent_view);
+        ViewTreeObserver vtotimerLayoutParent = timerLayoutParent.getViewTreeObserver();
+
+        vtotimerLayoutParent.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                timerLayoutParent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int widthOfTimerLayoutContainer = timerLayoutParent.getWidth();
+                int heightOfTimerLayoutContainer = timerLayoutParent.getHeight();
+
+                StopWatchView stopWatchView = new StopWatchView(
+                        getApplicationContext(),
+                        model,
+                        widthOfTimerLayoutContainer,
+                        heightOfTimerLayoutContainer
+                );
+                timerLayoutParent.addView(stopWatchView);
             }
         });
     }
@@ -129,15 +168,89 @@ public class MainActivity extends AppCompatActivity implements Observer {
     @Override
     public void update(Observable observable, Object o) {
        manageBetButtonState();
-
+       manageDrawCardButtonState();
+       manageStickButtonState();
     }
 
     private void manageBetButtonState(){
         if(model.getPlacedBets().size() != 2 || model.isGameOver()){
-            this.betButton.setTextColor(Color.GREEN);
+//            this.betButton.setTextColor(Color.GREEN);
+            this.betButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
+            betButtonAnimator.start();
         }else{
             this.betButton.setTextColor(Color.RED);
+            this.betButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            betButtonAnimator.pause();
         }
+    }
+
+    // these manage anim btn's methods can be refactored
+    private void manageDrawCardButtonState(){
+        boolean areInitialCardsDealt = false;
+        if(model.getPlayersInDeal().size() == 2)
+            areInitialCardsDealt = model.getPlayersInDeal().get(0).getHand().getCards().size() >= 2 &&
+                    model.getPlayersInDeal().get(1).getHand().getCards().size() >= 2;
+
+        boolean isPlayersTurn = model.getCurrentPlayer().getName().equals(playerName);
+
+        if(isPlayersTurn &&
+                model.getPlacedBets().size() == 2 &&
+                areInitialCardsDealt &&
+                !model.isGameOver()){
+//            this.betButton.setTextColor(Color.GREEN);
+            this.drawCardButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
+            drawCardButtonAnimator.start();
+        }else if(isPlayersTurn &&
+                model.getPlacedBets().size() == 2 &&
+                !areInitialCardsDealt &&
+                !model.isGameOver()){
+            this.drawCardButton.setTextColor(Color.YELLOW);
+            this.drawCardButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            drawCardButtonAnimator.pause();
+        }else{
+            this.drawCardButton.setTextColor(Color.RED);
+            this.drawCardButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            drawCardButtonAnimator.pause();
+        }
+    }
+
+    private void manageStickButtonState(){
+        boolean areInitialCardsDealt = false;
+        if(model.getPlayersInDeal().size() == 2)
+            areInitialCardsDealt = model.getPlayersInDeal().get(0).getHand().getCards().size() >= 2 &&
+                    model.getPlayersInDeal().get(1).getHand().getCards().size() >= 2;
+
+        boolean isPlayersTurn = model.getCurrentPlayer().getName().equals(playerName);
+
+        if(isPlayersTurn &&
+                model.getPlacedBets().size() == 2 &&
+                areInitialCardsDealt &&
+                !model.isGameOver()){
+//            this.betButton.setTextColor(Color.GREEN);
+            this.stickButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
+            stickButtonAnimator.start();
+        }else if(isPlayersTurn &&
+                model.getPlacedBets().size() == 2 &&
+                !areInitialCardsDealt &&
+                !model.isGameOver()){
+            this.stickButton.setTextColor(Color.YELLOW);
+            this.stickButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            stickButtonAnimator.pause();
+        }else{
+            this.stickButton.setTextColor(Color.RED);
+            this.stickButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            stickButtonAnimator.pause();
+        }
+    }
+
+    private ObjectAnimator blinkAnimationEffect(Button btn){
+        ObjectAnimator anim = ObjectAnimator.ofInt(btn, "textColor", Color.DKGRAY,
+                Color.GREEN, Color.DKGRAY);
+        anim.setDuration(700);
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.setRepeatMode(ValueAnimator.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+        return anim;
     }
 
 }

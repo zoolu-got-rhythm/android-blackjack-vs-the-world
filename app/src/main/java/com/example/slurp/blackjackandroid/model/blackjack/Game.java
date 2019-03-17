@@ -1,17 +1,26 @@
 package com.example.slurp.blackjackandroid.model.blackjack;
 
 
+import android.support.annotation.Nullable;
+
 import com.example.slurp.blackjackandroid.model.playingcards.Deck;
 import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
+import com.example.slurp.blackjackandroid.utils.StopWatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
 
 // note: could use aspect oriented programming/aop here to trigger observer.update after every method call
 public class Game extends Observable{
 
+
+    // mode = delay or no-delay, sync or a-sync
+    private StopWatch gameTimer;
     private ArrayList<Player> players;
     private ArrayList<Player> playersInGame;
     private ArrayList<Player> playersInDeal;
@@ -22,8 +31,6 @@ public class Game extends Observable{
     private HashMap<Player, Integer> placedBets;
     private final int chipsNeededToWin = 30;
     private boolean roundIsOver = false;
-
-
 
     public Game (Player playerNameA, Player playerNameB, Player... otherPlayerNames){
         super();
@@ -43,6 +50,39 @@ public class Game extends Observable{
         theDeck=new Deck();
         currentPlayer = players.get(0);
         placedBets = new HashMap<>();
+//        isGameOver = false;
+    }
+
+    public void startGameTimer() {
+        this.gameTimer = new StopWatch();
+        this.gameTimer.start();
+    }
+
+    public void stopGameTimer(){
+        try {
+            this.gameTimer.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pauseGameTimer(){
+        this.gameTimer.pause();
+    }
+
+    public void resumeGameTimer(){
+        this.gameTimer.resume();
+    }
+
+    @Nullable
+    public String getPlayersTime (){
+        String formattedTime = null;
+        try {
+            formattedTime = this.gameTimer.getFormattedTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return formattedTime;
     }
 
     public void setRoundIsOver(boolean roundIsOver) {
@@ -74,7 +114,7 @@ public class Game extends Observable{
                 System.out.println(e.getMessage());
             }
 
-        isGameOver = false;
+//        isGameOver = false;
 
         this.notifyView();
     }
@@ -88,22 +128,43 @@ public class Game extends Observable{
 //        this.notifyView();
     }
 
-    public void dealCards(int numberOfCardsInInitialShuffle, boolean shuffleFirst){
+    public void dealCards(final int numberOfCardsInInitialShuffle, boolean shuffleFirst){
 
-        PlayingCard aCard;
+//        final PlayingCard aCard;
+
+        final android.os.Handler handler = new android.os.Handler();
 
         if (shuffleFirst){
             theDeck.shuffle(100);
         }
-        for (int cards=1;cards<=numberOfCardsInInitialShuffle;cards++){
-            for (Player aPlayer : playersInGame) {
-                aCard = theDeck.deal();
+//
+        final Timer t = new Timer();
+
+        t.scheduleAtFixedRate(new TimerTask() {
+            int i = 0;
+            @Override
+            public void run() {
+
+                final Player aPlayer = playersInGame.get(i % 2 == 0 ? 0 : 1);
+                PlayingCard aCard = theDeck.deal();
                 System.out.println(aCard.rank);
                 aPlayer.getHand().addCard(aCard);
-            }
-        }
+                i++;
 
-        this.notifyView();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyView();
+                    }
+                });
+
+                if(i == numberOfCardsInInitialShuffle * 2)
+                    t.cancel();
+
+            }
+        }, 0, 450);
+
+
     }
 
     // check blackjack
