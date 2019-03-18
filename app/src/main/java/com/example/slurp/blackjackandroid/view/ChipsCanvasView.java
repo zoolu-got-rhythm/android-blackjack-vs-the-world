@@ -52,10 +52,14 @@ public class ChipsCanvasView extends View implements Observer {
             e.printStackTrace();
         }
 
+        int nToSubtractFromRanXoffsetToCreateNegativeAndPositiveNumber = (chipWidth / 4) / 2;
+
         for(int i = 0; i <= player.getChips().getCurrentBalance(); i++){
-                canvas.drawRect(new Rect(chipWidth / 2,
+            int randomXOffset = (int) Math.round(Math.random() * chipWidth / 4) -
+                    nToSubtractFromRanXoffsetToCreateNegativeAndPositiveNumber;
+                canvas.drawRect(new Rect((chipWidth / 2) + randomXOffset,
                                 this.height - (i * (this.height / 30)),
-                        this.width - (chipWidth / 2),
+                        this.width - (chipWidth / 2) + randomXOffset,
                         this.height - (i * (this.height / 30)) + (this.height / 30) - 1), chipPaint);
         }
 
