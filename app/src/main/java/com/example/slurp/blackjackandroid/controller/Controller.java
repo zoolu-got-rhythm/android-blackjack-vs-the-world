@@ -24,6 +24,8 @@ public class Controller{
         if(winner == null){
             this.model.resetGame(false, 0);
             return;
+        }else{
+            this.model.giveChipsToWinnerFromFromLooser(winner);
         }
 
         int playerChipsValue = 0;
@@ -50,10 +52,7 @@ public class Controller{
     public void playerDrawCard(){
         if(model.isGameOver())
             return;
-        System.out.println("execute");
         model.twist(model.getCurrentPlayer());
-//        if(model.isGameOver())
-//            this.getWinnerAndRestGameIfOver();
     }
 
     // controls how the computer reacts to the player when he sticks
@@ -89,23 +88,7 @@ public class Controller{
             System.out.println("looping");
         }
 
-        Player losingPlayer = null;
-        if(!model.isGameOver()){
-            // if not draw remove loser from game
-            for(Player p : model.getPlayersInGame()){
-                if(model.getWinner() != null && !model.getWinner().getName().equals(p.getName())){
-                   losingPlayer = p;
-                }
-            }
 
-            if(losingPlayer != null){
-                model.getPlayersInGame().remove(losingPlayer);
-                model.getPlayersInDeal().remove(losingPlayer);
-            }else{
-                model.setRoundIsOver(true);
-            }
-
-        }
         model.notifyView();
 //        this.getWinnerAndRestGameIfOver();
     }

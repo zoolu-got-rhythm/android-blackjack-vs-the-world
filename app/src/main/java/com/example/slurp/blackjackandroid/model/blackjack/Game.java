@@ -2,6 +2,7 @@ package com.example.slurp.blackjackandroid.model.blackjack;
 
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.example.slurp.blackjackandroid.model.playingcards.Deck;
 import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
@@ -192,8 +193,7 @@ public class Game extends Observable{
 
         if (currentPlayerIndex==numberOfPlayersInGame-1){
             currentPlayer = playersInDeal.get(0);
-        }
-        else{
+        } else{
             currentPlayer = playersInDeal.get(currentPlayerIndex+1);
         }
     }
@@ -202,6 +202,28 @@ public class Game extends Observable{
         if(!this.getPlacedBets().isEmpty()) {
             playersInDeal.remove(aPlayer);
             aPlayer.stick();
+
+            if(this.isGameOver()){
+                Player losingPlayer = null;
+
+                // if not draw remove loser from game
+                for(Player p : this.getPlayersInGame()){
+                    if(this.getWinner() != null && !this.getWinner().getName().equals(p.getName())){
+                        losingPlayer = p;
+                    }
+                }
+
+                // this logic should be in this not controller
+                if(losingPlayer != null){
+                    this.getPlayersInGame().remove(losingPlayer);
+                    this.getPlayersInDeal().remove(losingPlayer);
+                    int chipsValue = placedBets.get(aPlayer);
+                    aPlayer.getChips().removeChips(chipsValue);
+                }
+
+                this.setRoundIsOver(true);
+            }
+
         }
     }
 
@@ -215,6 +237,7 @@ public class Game extends Observable{
                 playersInDeal.remove(aPlayer);
                 int chipsValue = placedBets.get(aPlayer);
                 aPlayer.getChips().removeChips(chipsValue);
+                setRoundIsOver(true);
             }
             this.notifyView();
         }
@@ -233,14 +256,11 @@ public class Game extends Observable{
     }
 
     public Player getWinner(){
-        Player theWinner;
+        Player theWinner = null;
 
         //if everyone else has gone bust, the winner is the last player standing
         if (playersInGame.size()==1){
             theWinner=playersInGame.get(0);
-            int chipsValue = placedBets.get(theWinner);
-            theWinner.getChips().addChips(chipsValue);
-            this.winner = theWinner;
             return theWinner;
         }
 
@@ -257,8 +277,6 @@ public class Game extends Observable{
         }
 
         if(isDraw){
-            theWinner = null;
-            this.winner = null;
             return theWinner;
         }
 
@@ -270,21 +288,21 @@ public class Game extends Observable{
             }
         }
 
-        // need to detach this into it's own method
+        return theWinner;
+    }
 
+    public void giveChipsToWinnerFromFromLooser(Player theWinner){
         // give chips to winner, remove from loosers
         for(int j = 0; j < playersInGame.size(); j++){
             if(playersInGame.get(j) == theWinner){
                 int chipsValue = placedBets.get(theWinner);
                 playersInGame.get(j).getChips().addChips(chipsValue);
+                Log.d("chips val", Integer.toString(chipsValue));
             }else{
                 int chipsValue = placedBets.get(playersInGame.get(j));
                 playersInGame.get(j).getChips().removeChips(chipsValue);
             }
         }
-
-        this.winner=theWinner;
-        return theWinner;
     }
 
     public void notifyView(){

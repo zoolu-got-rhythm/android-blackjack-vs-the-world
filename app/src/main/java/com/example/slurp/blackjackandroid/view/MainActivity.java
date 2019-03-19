@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 cardsLayoutParent.addView(boardCanvasViewComputer);
                 cardsLayoutParent.addView(boardCanvasViewPlayer);
 
-
             }
 
         });
@@ -123,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
                         playerName,
                         widthOfChipsLayout,
                         heightOfChipsLayout);
+
+                model.addObserver(chipsCanvasView);
                 chipsLayoutParent.addView(chipsCanvasView);
 
             }
