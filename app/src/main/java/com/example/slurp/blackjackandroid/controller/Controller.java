@@ -15,7 +15,7 @@ public class Controller{
         this.betPlaced = 0;
     }
 
-    private void getWinnerAndRestGameIfOver(){
+    private void getWinnerAndResetGameIfOver(){ // this should only reset game and do nothing else
         // move to view
         Player winner = this.model.getWinner(); // this also deals with assigning chips to winner,
         // should refactor this
@@ -24,8 +24,6 @@ public class Controller{
         if(winner == null){
             this.model.resetGame(false, 0);
             return;
-        }else{
-            this.model.giveChipsToWinnerFromFromLooser(winner);
         }
 
         int playerChipsValue = 0;
@@ -59,43 +57,12 @@ public class Controller{
     public void stay(){
         if(model.isGameOver())
             return;
-
         model.stick(model.getCurrentPlayer());
-        try {
-            model.nextPlayer();
-        } catch (NoPlayersInGameException e) {
-            e.printStackTrace();
-        }
-
-        int computerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
-                model.getCurrentPlayer().getHand().getBestValue());
-
-        int playerValue = 0;
-
-        try {
-            playerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
-                    model.getPlayerByName("player").getHand().getBestValue());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        while (computerValue < playerValue
-                && computerValue != 0 && computerValue != 1 && computerValue != 23){
-            model.twist(model.getCurrentPlayer());
-            computerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
-                    model.getCurrentPlayer().getHand().getBestValue());
-
-            System.out.println("looping");
-        }
-
-
-        model.notifyView();
-//        this.getWinnerAndRestGameIfOver();
     }
 
     private void placeBet(int betAmount) {
         if(model.isGameOver())
-            this.getWinnerAndRestGameIfOver();
+            this.getWinnerAndResetGameIfOver();
 
         int playerChipsAmount = 0;
         try {

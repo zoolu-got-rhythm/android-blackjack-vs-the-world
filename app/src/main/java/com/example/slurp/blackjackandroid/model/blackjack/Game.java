@@ -203,27 +203,59 @@ public class Game extends Observable{
             playersInDeal.remove(aPlayer);
             aPlayer.stick();
 
-            if(this.isGameOver()){
-                Player losingPlayer = null;
 
-                // if not draw remove loser from game
-                for(Player p : this.getPlayersInGame()){
-                    if(this.getWinner() != null && !this.getWinner().getName().equals(p.getName())){
-                        losingPlayer = p;
-                    }
-                }
-
-                // this logic should be in this not controller
-                if(losingPlayer != null){
-                    this.getPlayersInGame().remove(losingPlayer);
-                    this.getPlayersInDeal().remove(losingPlayer);
-                    int chipsValue = placedBets.get(aPlayer);
-                    aPlayer.getChips().removeChips(chipsValue);
-                }
-
-                this.setRoundIsOver(true);
+            try {
+                this.nextPlayer();
+            } catch (NoPlayersInGameException e) {
+                e.printStackTrace();
             }
 
+            int computerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
+                    this.getCurrentPlayer().getHand().getBestValue());
+
+            int playerValue = 0;
+
+            try {
+                playerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
+                        this.getPlayerByName("player").getHand().getBestValue());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            while (computerValue < playerValue
+                    && computerValue != 0 && computerValue != 1 && computerValue != 23){
+                this.twist(this.getCurrentPlayer());
+                computerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
+                        this.getCurrentPlayer().getHand().getBestValue());
+
+                System.out.println("looping");
+            }
+
+
+
+
+
+            Player losingPlayer = null;
+
+            // if not draw remove loser from game
+            for(Player p : this.getPlayersInGame()){
+                if(this.getWinner() != null && !this.getWinner().getName().equals(p.getName())){
+                    losingPlayer = p;
+                }
+            }
+
+            // if not draw
+            if(losingPlayer != null){
+                this.getPlayersInGame().remove(losingPlayer);
+                this.getPlayersInDeal().remove(losingPlayer);
+//                int chipsValue = placedBets.get(aPlayer);
+//                aPlayer.getChips().removeChips(chipsValue);
+                    this.addChipsToWinnerRemoveFromLoosers(this.getWinner());
+            }
+
+            this.setRoundIsOver(true);
+
+            this.notifyView();
         }
     }
 
@@ -235,8 +267,9 @@ public class Game extends Observable{
             if (aPlayer.getHand().getBestValue() == HandValue.BUST) {
                 playersInGame.remove(aPlayer);
                 playersInDeal.remove(aPlayer);
-                int chipsValue = placedBets.get(aPlayer);
-                aPlayer.getChips().removeChips(chipsValue);
+//                int chipsValue = placedBets.get(aPlayer);
+//                aPlayer.getChips().removeChips(chipsValue);
+                this.addChipsToWinnerRemoveFromLoosers(this.getWinner());
                 setRoundIsOver(true);
             }
             this.notifyView();
@@ -291,16 +324,16 @@ public class Game extends Observable{
         return theWinner;
     }
 
-    public void giveChipsToWinnerFromFromLooser(Player theWinner){
+    public void addChipsToWinnerRemoveFromLoosers(Player theWinner){
         // give chips to winner, remove from loosers
-        for(int j = 0; j < playersInGame.size(); j++){
-            if(playersInGame.get(j) == theWinner){
+        for(int j = 0; j < players.size(); j++){
+            if(players.get(j) == theWinner){
                 int chipsValue = placedBets.get(theWinner);
-                playersInGame.get(j).getChips().addChips(chipsValue);
+                players.get(j).getChips().addChips(chipsValue);
                 Log.d("chips val", Integer.toString(chipsValue));
             }else{
-                int chipsValue = placedBets.get(playersInGame.get(j));
-                playersInGame.get(j).getChips().removeChips(chipsValue);
+                int chipsValue = placedBets.get(players.get(j));
+                players.get(j).getChips().removeChips(chipsValue);
             }
         }
     }
