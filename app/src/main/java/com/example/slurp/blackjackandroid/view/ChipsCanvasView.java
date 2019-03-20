@@ -49,6 +49,25 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
         backgroundColour.setColor(Color.GRAY);
         canvas.drawRect(new Rect(0, 0, this.width, this.height), backgroundColour);
 
+        Paint mBackgroundTilePaint = new Paint();
+        int squareSizeX = this.width;
+        int squareSizeY = 90;
+        squareSizeX = squareSizeX / 9;
+        squareSizeY = squareSizeY / 3;
+
+        for(int i = 0; i < 9; i++){
+            for(int j = 0; j < 3; j++){
+                if(j % 2 == 0){
+                    mBackgroundTilePaint.setColor(i % 2 == 0 ? Color.BLACK: Color.WHITE);
+                }else{
+                    mBackgroundTilePaint.setColor(i % 2 == 0 ? Color.WHITE : Color.BLACK);
+                }
+                canvas.drawRect(new Rect(i * squareSizeX,
+                        j * (squareSizeY), (i * squareSizeX) + squareSizeX,
+                        (j * squareSizeY) + squareSizeY), mBackgroundTilePaint);
+            }
+        }
+
         Paint chipPaint = new Paint();
         chipPaint.setColor(Color.YELLOW);
         int chipWidth = this.width / 2;
