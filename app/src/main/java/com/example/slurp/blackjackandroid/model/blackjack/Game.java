@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.slurp.blackjackandroid.model.playingcards.Deck;
 import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
 import com.example.slurp.blackjackandroid.utils.StopWatch;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.TimerTask;
 import java.util.logging.Handler;
 
 // note: could use aspect oriented programming/aop here to trigger observer.update after every method call
-public class Game extends Observable{
+public class Game extends Observable implements Cloneable{
 
 
     // mode = delay or no-delay, sync or a-sync
@@ -26,8 +27,6 @@ public class Game extends Observable{
     private ArrayList<Player> playersInGame;
     private ArrayList<Player> playersInDeal;
     private Player currentPlayer;
-    private Player winner;
-    private boolean isGameOver;
     private Deck theDeck;
     private HashMap<Player, Integer> placedBets;
     private final int chipsNeededToWin = 30;
@@ -345,6 +344,13 @@ public class Game extends Observable{
         super.clearChanged();
     }
 
+    @Override
+    public Object clone() {
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        return gson.fromJson(json, Game.class);
+    }
+
 
     @Override
     public void addObserver(Observer o){ // can denote this method i think and just directly/externally call super method
@@ -355,7 +361,7 @@ public class Game extends Observable{
     public String toString() {
         return "Game{" +
                 "players=" + players +
-                ", winner=" + winner +
+                ", winner=" + this.getWinner() +
                 '}';
     }
 

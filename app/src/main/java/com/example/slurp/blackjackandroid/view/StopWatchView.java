@@ -37,6 +37,7 @@ public class StopWatchView extends android.support.v7.widget.AppCompatTextView {
                     }
                 });
             }
+
         }, 0, this.INTERVAL_IN_MS);
     }
 }

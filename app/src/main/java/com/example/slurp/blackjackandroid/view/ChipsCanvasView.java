@@ -14,11 +14,12 @@ import com.example.slurp.blackjackandroid.model.blackjack.Player;
 import java.util.Observable;
 import java.util.Observer;
 
-public class ChipsCanvasView extends View implements Observer {
+public class ChipsCanvasView extends View implements Observer, ViewComponent {
     private int width, height;
     private Game model;
     private String playerName;
     private Handler mHandler;
+    private int prevChipsBalance;
 
     public ChipsCanvasView(Context context, Game model, String playerName, int width, int height) {
         super(context);
@@ -26,6 +27,14 @@ public class ChipsCanvasView extends View implements Observer {
         this.height = height;
         this.model = model;
         this.playerName = playerName;
+
+        try {
+            prevChipsBalance =
+                    this.model.getPlayerByName(this.playerName).getChips().getCurrentBalance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         this.mHandler = new Handler();
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(this.width,
@@ -68,14 +77,38 @@ public class ChipsCanvasView extends View implements Observer {
     @Override
     public void update(Observable observable, Object o) {
 
-        this.model = (Game) observable;
+        this.model = (Game) observable; // is this needed? shouldn't be?
 
-        this.mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                // runOnUiThread
-                invalidate();
-            }
-        });
+        if(this.shouldComponentUpdate(this.model)){
+            this.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    // runOnUiThread
+                    invalidate();
+                }
+            });
+        }
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(Game newModleState) {
+
+        int newPlayerStateChipsBalance = 0;
+        try {
+            newPlayerStateChipsBalance =
+                    newModleState.getPlayerByName(this.playerName).getChips().getCurrentBalance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        boolean prevAndNewStateIsDifferent = false;
+        if(this.prevChipsBalance != newPlayerStateChipsBalance){
+            prevAndNewStateIsDifferent = true;
+        }
+
+        // update prevChipsBalanceState as ref to compare against for next call
+        this.prevChipsBalance = newPlayerStateChipsBalance;
+
+        return prevAndNewStateIsDifferent;
     }
 }
