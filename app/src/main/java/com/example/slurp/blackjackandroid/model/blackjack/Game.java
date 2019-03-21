@@ -162,7 +162,7 @@ public class Game extends Observable implements Cloneable{
                     t.cancel();
 
             }
-        }, 0, 450);
+        }, 0, 300);
 
 
     }
