@@ -51,16 +51,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
         this.model.addObserver(this);
 
 
-        betButton = findViewById(R.id.betBtn);
-        betButtonAnimator = this.blinkAnimationEffect(betButton);
-        betButton.setBackgroundColor(Color.DKGRAY);
-        betButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                controller.setBetPlaced(3);
-                controller.bet();
-            }
-        });
+//        betButton = findViewById(R.id.betBtn);
+//        betButtonAnimator = this.blinkAnimationEffect(betButton);
+//        betButton.setBackgroundColor(Color.DKGRAY);
+//        betButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                controller.setBetPlaced(3);
+//                controller.bet();
+//            }
+//        });
 
         drawCardButton = findViewById(R.id.cardBtn);
         drawCardButtonAnimator = this.blinkAnimationEffect(drawCardButton);
@@ -81,6 +81,24 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 controller.stay();
             }
         });
+
+        final LinearLayout bettingLayoutParent = findViewById(R.id.bettingContainer);
+        CustomBettingView customBettingView = new CustomBettingView(getApplicationContext(), playerName);
+        this.model.addObserver(customBettingView);
+
+        customBettingView.setOnBettingListener(new CustomBettingView.OnBettingListener() {
+            @Override
+            public void onBetMade(View v, int chipsValuePlaced) {
+                controller.setBetPlaced(chipsValuePlaced);
+            }
+
+            @Override
+            public void onReadyToPlay(View v) {
+                controller.bet();
+            }
+        });
+        bettingLayoutParent.addView(customBettingView);
+
 
 
 
@@ -149,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 timerLayoutParent.addView(stopWatchView);
             }
         });
+
+
+
     }
 
     @Override
@@ -168,22 +189,22 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-       manageBetButtonState();
+//       manageBetButtonState();
        manageDrawCardButtonState();
        manageStickButtonState();
     }
 
-    private void manageBetButtonState(){
-        if(model.getPlacedBets().size() != 2 || model.isGameOver()){
-//            this.betButton.setTextColor(Color.GREEN);
-            this.betButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
-            betButtonAnimator.start();
-        }else{
-            this.betButton.setTextColor(Color.RED);
-            this.betButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            betButtonAnimator.pause();
-        }
-    }
+//    private void manageBetButtonState(){
+//        if(model.getPlacedBets().size() != 2 || model.isGameOver()){
+////            this.betButton.setTextColor(Color.GREEN);
+//            this.betButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
+//            betButtonAnimator.start();
+//        }else{
+//            this.betButton.setTextColor(Color.RED);
+//            this.betButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+//            betButtonAnimator.pause();
+//        }
+//    }
 
     // these manage anim btn's methods can be refactored
     private void manageDrawCardButtonState(){
