@@ -39,8 +39,6 @@ public class BoardCanvasView extends View implements Observer {
         this.width = width;
         this.height = height;
 
-
-
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(this.width,
                 this.height);
 
@@ -120,10 +118,18 @@ public class BoardCanvasView extends View implements Observer {
         int cardWidth = 300;
         int cardHeight = 350;
         int xOffset = 20;
+
+        int cardIndex = 0;
+
         for(PlayingCard card : player.getHand().getCards()){
 
             // find cardImageResourceId at runtime
             String imagePathForCard = EnumToCardPath.imgPathFromRankAndSuitEnums(card.rank, card.suit);
+            if(player.getName().equals("house") &&
+                    player.getHand().getCards().size() == 2 &&
+                    cardIndex == 1 && !this.model.isGameOver()){
+                imagePathForCard = "back.png";
+            }
             imagePathForCard = imagePathForCard.substring(0, imagePathForCard.length() - 4); // remove .png extention
             int cardImageResourceId = getResId(imagePathForCard, R.drawable.class);
             Log.d("card resource path", imagePathForCard);
@@ -149,6 +155,7 @@ public class BoardCanvasView extends View implements Observer {
                     new Rect(xOffset, (offsetFromTop + 100), xOffset + cardWidth, (offsetFromTop + 100) + cardHeight), null);
 
             xOffset += 100;
+            cardIndex++;
         }
 
 

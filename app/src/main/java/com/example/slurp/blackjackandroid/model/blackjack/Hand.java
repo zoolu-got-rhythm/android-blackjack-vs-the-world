@@ -6,6 +6,7 @@ import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
 import com.example.slurp.blackjackandroid.model.playingcards.Rank;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -19,7 +20,7 @@ public class Hand {
 
 
     public Hand() {
-        cards = new HashSet<PlayingCard>();
+        cards = new LinkedHashSet<PlayingCard>();
         total = 0;
         aces = 0;
 

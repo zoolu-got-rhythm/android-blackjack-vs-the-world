@@ -83,7 +83,11 @@ public class CustomBettingView extends LinearLayout implements Observer{
 
         final NumberPicker numberPicker = new NumberPicker(this.getContext());
         numberPicker.setMinValue(3);
-        numberPicker.setMaxValue(user.getChips().getCurrentBalance());
+        if(user.getChips().getCurrentBalance() < 3){
+            numberPicker.setMaxValue(3);
+        }else{
+            numberPicker.setMaxValue(user.getChips().getCurrentBalance());
+        }
         numberPicker.setScaleX(2f);
         numberPicker.setScaleY(1.5f);
         numberPicker.setValue(3);
@@ -152,7 +156,6 @@ public class CustomBettingView extends LinearLayout implements Observer{
                 LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         gameInProgParams.weight = 1;
         gameInProgTextView.setLayoutParams(gameInProgParams);
-
 
         gameInProgTextView.setText("your go");
         gameInProgTextView.setTextSize(18f);
