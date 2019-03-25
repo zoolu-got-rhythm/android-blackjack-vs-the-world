@@ -97,7 +97,14 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 controller.bet();
             }
         });
+
         bettingLayoutParent.addView(customBettingView);
+
+        final LinearLayout hintsLayoutParent = findViewById(R.id.hints_container);
+        HintView hintView = new HintView(getApplicationContext());
+        this.model.addObserver(hintView);
+        hintsLayoutParent.addView(hintView);
+
 
 
 

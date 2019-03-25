@@ -109,7 +109,11 @@ public class BoardCanvasView extends View implements Observer {
             }
         }
 
-        playerNameAndHandValue += " HAND = "+ player.getHand().getBestValue().toString().toLowerCase();
+        playerNameAndHandValue += " HAND = "+
+                (player.getName().equals("house") &&
+                player.getHand().getCards().size() <= 2 &&
+                !this.model.isGameOver() ?
+                        "unknown" : player.getHand().getBestValue().toString().toLowerCase());
 
         canvas.drawText(playerNameAndHandValue, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
 
