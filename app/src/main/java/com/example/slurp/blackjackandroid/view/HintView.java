@@ -37,20 +37,23 @@ public class HintView extends LinearLayout implements Observer{
 //        Bitmap bitmapOfTipsMan = BitmapFactory.decodeResource(getResources(), R.drawable.tips_man);
 
 
-        this.hintTextView = new TextView(this.getContext());
-        this.hintTextView.setText("can you beat me?");
-        LinearLayout.LayoutParams hintTextViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        hintTextViewParams.weight = 1;
-        this.hintTextView.setLayoutParams(hintTextViewParams);
-        this.hintTextView.setTextSize(22f);
-        this.hintTextView.setPadding(50, 0,0,0);
-        this.hintTextView.setBackgroundColor(Color.BLACK);
-        this.hintTextView.setTextColor(Color.MAGENTA);
-        this.hintTextView.setGravity(Gravity.CENTER_VERTICAL);
+//        this.hintTextView = new TextView(this.getContext());
+//        this.hintTextView.setText("can you beat me?");
+//        LinearLayout.LayoutParams hintTextViewParams = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+//        hintTextViewParams.weight = 1;
+//        this.hintTextView.setLayoutParams(hintTextViewParams);
+//        this.hintTextView.setTextSize(22f);
+//        this.hintTextView.setPadding(50, 0,0,0);
+//        this.hintTextView.setBackgroundColor(Color.BLACK);
+//        this.hintTextView.setTextColor(Color.MAGENTA);
+//        this.hintTextView.setGravity(Gravity.CENTER_VERTICAL);
 
         this.addView(faceView);
-        this.addView(this.hintTextView);
+//        this.addView(this.hintTextView);
+        SpeechScrollerView speechScrollerView = new SpeechScrollerView(getContext());
+        this.addView(speechScrollerView);
+        speechScrollerView.drawDialogueBox();
     }
 
 
@@ -58,30 +61,30 @@ public class HintView extends LinearLayout implements Observer{
     public void update(Observable observable, Object o) {
         this.model = (Game) observable;
 
-        String hint;
-
-        // implement should update
-
-        Player winner = this.model.getWinner();
-        if(winner != null) {
-            if (this.model.isGameOver() && winner.getName().equals("house")) {
-                hint = "Hah! unlucky...";
-                this.hintTextView.setText(hint);
-            }
-
-            if (this.model.isGameOver() && winner.getName().equals("player")) {
-                hint = "heh' good job!";
-                this.hintTextView.setText(hint);
-            }
-        }else{
-            if(this.model.isGameOver()){
-                hint = "tie! interesting...";
-                this.hintTextView.setText(hint);
-            }else{
-                hint = "time is ticking...";
-                this.hintTextView.setText(hint);
-            }
-        }
+//        String hint;
+//
+//        // implement should update
+//
+//        Player winner = this.model.getWinner();
+//        if(winner != null) {
+//            if (this.model.isGameOver() && winner.getName().equals("house")) {
+//                hint = "Hah! unlucky...";
+//                this.hintTextView.setText(hint);
+//            }
+//
+//            if (this.model.isGameOver() && winner.getName().equals("player")) {
+//                hint = "heh' good job!";
+//                this.hintTextView.setText(hint);
+//            }
+//        }else{
+//            if(this.model.isGameOver()){
+//                hint = "tie! interesting...";
+//                this.hintTextView.setText(hint);
+//            }else{
+//                hint = "time is ticking...";
+//                this.hintTextView.setText(hint);
+//            }
+//        }
 
 
     }
