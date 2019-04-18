@@ -1,10 +1,12 @@
 package com.example.slurp.blackjackandroid.view;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -39,6 +41,7 @@ public class SpeechScrollerView extends View{
     @Override
     protected void onDraw(final android.graphics.Canvas canvas) {
         drawAsLines(canvas);
+        drawFont(canvas);
     }
 
     private void drawAsLines(Canvas canvas){
@@ -63,6 +66,18 @@ public class SpeechScrollerView extends View{
                     this.currentPlot.get(0).getY()
                     , speechBoxOutline);
         }
+    }
+
+    private void drawFont(Canvas canvas){
+
+        AssetManager am = getContext().getAssets();
+        Typeface custom_font = Typeface.createFromAsset(am,  "fonts/Dokdo-Regular.ttf");
+
+        Paint paint = new Paint();
+        paint.setTypeface(custom_font);
+        paint.setTextSize(70);
+        paint.setColor(Color.MAGENTA);
+        canvas.drawText("blackjack!", 50, 80, paint);
     }
 
     private void drawAsDots(Canvas canvas){
@@ -103,7 +118,7 @@ public class SpeechScrollerView extends View{
 
 //            @Override
 //            public void run() {
-                mHandler.postAtFrontOfQueue(new Runnable() {
+        mHandler.postAtFrontOfQueue(new Runnable() {
                     @Override
                     public void run() {
                         postInvalidate();
