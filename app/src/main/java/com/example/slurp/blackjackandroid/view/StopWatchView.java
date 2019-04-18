@@ -24,7 +24,7 @@ public class StopWatchView extends android.support.v7.widget.AppCompatTextView {
         this.setHeight(height);
         this.setTextSize(18f);
         this.setBackgroundColor(Color.DKGRAY);
-        this.setTextColor(Color.CYAN);
+        this.setTextColor(Color.MAGENTA);
         this.setGravity(Gravity.CENTER);
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
