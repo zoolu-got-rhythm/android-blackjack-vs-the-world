@@ -6,7 +6,7 @@ public class SpeechBubblePlotManager {
 
     public SpeechBubblePlotManager() { }
 
-    private enum CURVE_ANGLE_ENUM {
+    public enum CURVE_ANGLE_ENUM {
         TOP_LEFT,
         TOP_RIGHT,
         BOTTOM_LEFT,
@@ -39,7 +39,6 @@ public class SpeechBubblePlotManager {
             pointsArray.add(currentPoint);
             if(i == spacesBetweenPoints){
                 lastPoint = currentPoint;
-//                console.log("hit 1");
             }
         }
 
@@ -166,15 +165,16 @@ public class SpeechBubblePlotManager {
         }
     }
 
-    private ArrayList<CustomPoint> plotAngleCurvCoords(CustomPoint centerPoint,
-                                               int radius, int nOfPoints, CURVE_ANGLE_ENUM curveAngleEnum){
+    public ArrayList<CustomPoint> plotAngleCurvCoords(CustomPoint centerPoint,
+                                               float radius, float nOfPoints, CURVE_ANGLE_ENUM curveAngleEnum){
 
         ArrayList<CustomPoint> pointsArray = new ArrayList<>();
 
-        int curveAngleDegreesToSubtract = 0; // should this be try/catch instead?
+        double curveAngleDegreesToSubtract = 0; // should this be try/catch instead?
 
         switch (curveAngleEnum){
             case TOP_RIGHT:
+                System.out.println("hit");
                 curveAngleDegreesToSubtract = degreesToRadians(90);
                 break;
             case BOTTOM_RIGHT:
@@ -205,7 +205,7 @@ public class SpeechBubblePlotManager {
     }
 
     // return type here may need to be double or float for accuracy
-    private int degreesToRadians(int degrees){
-        return (int) ((degrees / 180) * Math.PI);
+    public double degreesToRadians(float degrees){
+        return (degrees / 180) * Math.PI;
     }
 }

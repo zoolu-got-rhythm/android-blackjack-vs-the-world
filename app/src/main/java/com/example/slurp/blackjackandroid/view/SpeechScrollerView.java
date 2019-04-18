@@ -6,8 +6,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.example.slurp.blackjackandroid.R;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -35,13 +38,17 @@ public class SpeechScrollerView extends View{
 
     @Override
     protected void onDraw(final android.graphics.Canvas canvas) {
+        drawAsLines(canvas);
+    }
 
+    private void drawAsLines(Canvas canvas){
         if(currentPlot != null){
             final Paint speechBoxOutline = new Paint();
             speechBoxOutline.setStrokeWidth(11f);
+            speechBoxOutline.setColor(Color.MAGENTA);
+
 
             for(int i = 1; i < this.currentPlot.size(); i++){
-                speechBoxOutline.setColor(i % 2 == 0 ? Color.MAGENTA : Color.GREEN);
 
                 canvas.drawLine(this.currentPlot.get(i - 1).getX(),
                         this.currentPlot.get(i - 1).getY(),
@@ -55,8 +62,28 @@ public class SpeechScrollerView extends View{
                     this.currentPlot.get(0).getX(),
                     this.currentPlot.get(0).getY()
                     , speechBoxOutline);
+        }
+    }
+
+    private void drawAsDots(Canvas canvas){
+
+        int transPink = ContextCompat.getColor(getContext(), R.color.transparentPink);
+        int transPurple = ContextCompat.getColor(getContext(), R.color.transparentPurple);
 
 
+        int dotSize = 4;
+        if(currentPlot != null){
+            final Paint speechBoxOutline = new Paint();
+
+            for(int i = 0; i < this.currentPlot.size(); i++){
+                speechBoxOutline.setColor(i % 2 == 0 ? transPink : transPurple);
+
+                canvas.drawRect(this.currentPlot.get(i).getX() - dotSize,
+                        this.currentPlot.get(i).getY() - dotSize,
+                        this.currentPlot.get(i).getX() + dotSize,
+                        this.currentPlot.get(i).getY() + dotSize
+                        , speechBoxOutline);
+            }
         }
     }
 
@@ -66,10 +93,10 @@ public class SpeechScrollerView extends View{
                 new CustomPoint(60, 20),
                 300,
                 100,
-                15,
+                25,
                 8,
                 22,
-                5
+                3
         );
 
 //        new Timer().scheduleAtFixedRate(new TimerTask() {
