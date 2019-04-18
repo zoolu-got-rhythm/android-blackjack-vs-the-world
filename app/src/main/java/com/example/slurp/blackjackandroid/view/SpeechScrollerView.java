@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -16,7 +17,9 @@ import com.example.slurp.blackjackandroid.R;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,6 +27,7 @@ public class SpeechScrollerView extends View{
 
     private Handler mHandler;
     private ArrayList<CustomPoint> currentPlot;
+    private String textToDisplay;
 
 
     public SpeechScrollerView(Context context) {
@@ -70,14 +74,17 @@ public class SpeechScrollerView extends View{
 
     private void drawFont(Canvas canvas){
 
+        // put in constructor
         AssetManager am = getContext().getAssets();
         Typeface custom_font = Typeface.createFromAsset(am,  "fonts/Dokdo-Regular.ttf");
+        if(textToDisplay != null){
+            Paint paint = new Paint();
+            paint.setTypeface(custom_font);
+            paint.setTextSize(70);// change to class member
+            paint.setColor(Color.MAGENTA);
+            canvas.drawText(this.textToDisplay, 60 - 8, 85, paint);
+        }
 
-        Paint paint = new Paint();
-        paint.setTypeface(custom_font);
-        paint.setTextSize(70);
-        paint.setColor(Color.MAGENTA);
-        canvas.drawText("blackjack!", 50, 80, paint);
     }
 
     private void drawAsDots(Canvas canvas){
@@ -102,13 +109,40 @@ public class SpeechScrollerView extends View{
         }
     }
 
-    public void drawDialogueBox(){
+    // uses Paint object and Rect to get innerWidth and innerHeight of text/typeface based on size
+    private HashMap<String, Integer> inferTextSizeOfFontAndMap(Typeface typeface,
+                                                               float textSize, String text){
+        Paint mTextPaint = new Paint();
+        mTextPaint.setTypeface(typeface);
+        mTextPaint.setTextSize(textSize);
+
+        Rect bounds = new Rect();
+        mTextPaint.getTextBounds(text, 0, text.length(), bounds);
+
+        HashMap<String, Integer> mapOfTextWidthAndHeight = new HashMap<>();
+        mapOfTextWidthAndHeight.put("width", bounds.width());
+        mapOfTextWidthAndHeight.put("height", bounds.height());
+
+        return mapOfTextWidthAndHeight;
+    }
+
+    public void drawDialogueBox(String textToDisplay){
+
+        this.textToDisplay = textToDisplay;
+
+        AssetManager am = getContext().getAssets();
+        Typeface customFont = Typeface.createFromAsset(am,  "fonts/Dokdo-Regular.ttf");
+
+        HashMap<String, Integer> widthAndHeightOfText =
+                this.inferTextSizeOfFontAndMap(customFont, 70, textToDisplay);
+
+        int marginAndBorderRadius = 25;
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
                 new CustomPoint(60, 20),
-                300,
+                widthAndHeightOfText.get("width") + (marginAndBorderRadius * 2),
                 100,
-                25,
+                marginAndBorderRadius,
                 8,
                 22,
                 3

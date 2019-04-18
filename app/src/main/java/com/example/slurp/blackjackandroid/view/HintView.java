@@ -18,6 +18,7 @@ import java.util.Observer;
 public class HintView extends LinearLayout implements Observer{
     private Game model;
     private TextView hintTextView;
+    private SpeechScrollerView speechScrollerView;
 
     public HintView(Context context) {
         super(context);
@@ -51,9 +52,8 @@ public class HintView extends LinearLayout implements Observer{
 
         this.addView(faceView);
 //        this.addView(this.hintTextView);
-        SpeechScrollerView speechScrollerView = new SpeechScrollerView(getContext());
-        this.addView(speechScrollerView);
-        speechScrollerView.drawDialogueBox();
+        this.speechScrollerView = new SpeechScrollerView(getContext());
+        this.addView(this.speechScrollerView);
     }
 
 
@@ -61,31 +61,28 @@ public class HintView extends LinearLayout implements Observer{
     public void update(Observable observable, Object o) {
         this.model = (Game) observable;
 
-//        String hint;
+        String hint = "ready?";
 //
 //        // implement should update
 //
-//        Player winner = this.model.getWinner();
-//        if(winner != null) {
-//            if (this.model.isGameOver() && winner.getName().equals("house")) {
-//                hint = "Hah! unlucky...";
-//                this.hintTextView.setText(hint);
-//            }
-//
-//            if (this.model.isGameOver() && winner.getName().equals("player")) {
-//                hint = "heh' good job!";
-//                this.hintTextView.setText(hint);
-//            }
-//        }else{
-//            if(this.model.isGameOver()){
-//                hint = "tie! interesting...";
-//                this.hintTextView.setText(hint);
-//            }else{
-//                hint = "time is ticking...";
-//                this.hintTextView.setText(hint);
-//            }
-//        }
+        Player winner = this.model.getWinner();
+        if(winner != null) {
+            if (this.model.isGameOver() && winner.getName().equals("house")) {
+                hint = "hah! place bet";
+            }
 
+            if (this.model.isGameOver() && winner.getName().equals("player")) {
+                hint = "nice, place bet!";
+            }
+        }else{
+            if(this.model.isGameOver()){
+                hint = "tie! interesting ;)";
+            }else{
+                hint = "your go";
+            }
+        }
+
+        this.speechScrollerView.drawDialogueBox(hint);
 
     }
 }
