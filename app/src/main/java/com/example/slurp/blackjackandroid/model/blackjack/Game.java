@@ -151,6 +151,7 @@ public class Game extends Observable implements Cloneable{
                 aPlayer.getHand().addCard(aCard);
                 i++;
 
+                // this should be refactored in some way
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
