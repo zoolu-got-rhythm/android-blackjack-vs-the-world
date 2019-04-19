@@ -76,7 +76,7 @@ public class HintView extends LinearLayout implements Observer{
             }
         }else{
             if(this.model.isGameOver()){
-                hint = "tie! interesting ;)";
+                hint = "tie! interesting";
             }else{
                 hint = "your go";
             }

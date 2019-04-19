@@ -140,7 +140,7 @@ public class SpeechScrollerView extends View{
         HashMap<String, Integer> widthAndHeightOfText =
                 this.inferTextSizeOfFontAndMap(customFont, 70, textToDisplay);
 
-        int marginAndBorderRadius = 25;
+        int marginAndBorderRadius = 30;
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
                 new CustomPoint(60, 20),

@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ public class BoardCanvasView extends View implements Observer {
     private Paint mPaint;
     private int width, height;
     private String playerName;
+    final int cardTableGreen1 = ContextCompat.getColor(getContext(), R.color.darkGreen);
+    final int cardTableGreen2 = ContextCompat.getColor(getContext(), R.color.darkGreen2);
 
     public BoardCanvasView(Game model, Context context, String playerName, int width, int height) {
         super(context);
@@ -69,9 +72,9 @@ public class BoardCanvasView extends View implements Observer {
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 20; j++){
                 if(j % 2 == 0){
-                    mBackgroundTilePaint.setColor(i % 2 == 0 ? Color.YELLOW: Color.GREEN);
+                    mBackgroundTilePaint.setColor(i % 2 == 0 ? this.cardTableGreen1: this.cardTableGreen2);
                 }else{
-                    mBackgroundTilePaint.setColor(i % 2 == 0 ? Color.GREEN : Color.YELLOW);
+                    mBackgroundTilePaint.setColor(i % 2 == 0 ? this.cardTableGreen2 : this.cardTableGreen1);
                 }
                 canvas.drawRect(new Rect(i * squareSizeX,
                                 j * (squareSizeY) + (offsetFromTop + 2), (i * squareSizeX) + squareSizeX,
@@ -122,7 +125,6 @@ public class BoardCanvasView extends View implements Observer {
         int cardWidth = 300;
         int cardHeight = 350;
         int xOffset = 20;
-
         int cardIndex = 0;
 
         for(PlayingCard card : player.getHand().getCards()){
@@ -140,9 +142,9 @@ public class BoardCanvasView extends View implements Observer {
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), cardImageResourceId);
 
             Paint cardShadowPaint = new Paint();
-            cardShadowPaint.setColor(Color.DKGRAY);
+            cardShadowPaint.setColor(player.getName().equals("house") ? Color.MAGENTA : Color.GREEN);
             canvas.drawRoundRect(
-                    new RectF(xOffset - 10, (offsetFromTop + 100) + 10, xOffset + cardWidth - 10, (offsetFromTop + 100) + cardHeight + 10),
+                    new RectF(xOffset - 15, (offsetFromTop + 100) - 15, xOffset + cardWidth + 15, (offsetFromTop + 100) + cardHeight + 15),
                     15,
                     15,
                     cardShadowPaint);

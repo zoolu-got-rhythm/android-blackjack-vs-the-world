@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="transparentPink">#ccFF4081</color>
     <color name="transparentPurple">#cc59eaea</color>
+    <color name="darkGreen">#4423aa</color>
+    <color name="darkGreen2">#a459a2</color>
 </resources>
