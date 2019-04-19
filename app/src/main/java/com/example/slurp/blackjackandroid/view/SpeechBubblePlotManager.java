@@ -1,6 +1,7 @@
 package com.example.slurp.blackjackandroid.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SpeechBubblePlotManager {
 
@@ -207,5 +208,28 @@ public class SpeechBubblePlotManager {
     // return type here may need to be double or float for accuracy
     public double degreesToRadians(float degrees){
         return (degrees / 180) * Math.PI;
+    }
+
+    public ArrayList<CustomPoint> copyPlotArrAndWiggleByRange(ArrayList<CustomPoint> plotArr, float range){
+        ArrayList<CustomPoint> plotArrCopy = new ArrayList<>();
+
+        for(int i = 0; i < plotArr.size(); i++){
+            CustomPoint coOrd = plotArr.get(i);
+            float randXOffset = generateRandomNegOrPosNumberInRangeX(range);
+            float randomYOffset = generateRandomNegOrPosNumberInRangeX(range);
+
+            CustomPoint copyCoOrd = new CustomPoint(
+                    coOrd.getX() + randXOffset,
+                    coOrd.getY() + randomYOffset
+            );
+            plotArrCopy.add(copyCoOrd);
+        }
+
+        return plotArrCopy;
+    }
+
+    public float generateRandomNegOrPosNumberInRangeX(float x){
+        float division = x / 2;
+        return Math.round(Math.random() * x) - division;
     }
 }

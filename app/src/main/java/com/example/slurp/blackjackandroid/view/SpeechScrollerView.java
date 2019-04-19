@@ -26,8 +26,10 @@ import java.util.TimerTask;
 public class SpeechScrollerView extends View{
 
     private Handler mHandler;
-    private ArrayList<CustomPoint> currentPlot;
+    private ArrayList<CustomPoint> currentPlot, wigglePlot;
     private String textToDisplay;
+    private float randomTextWiggleOffset;
+    private Timer wiggleTimer;
 
 
     public SpeechScrollerView(Context context) {
@@ -55,19 +57,19 @@ public class SpeechScrollerView extends View{
             speechBoxOutline.setColor(Color.MAGENTA);
 
 
-            for(int i = 1; i < this.currentPlot.size(); i++){
+            for(int i = 1; i < this.wigglePlot.size(); i++){
 
-                canvas.drawLine(this.currentPlot.get(i - 1).getX(),
-                        this.currentPlot.get(i - 1).getY(),
-                        this.currentPlot.get(i).getX(),
-                        this.currentPlot.get(i).getY()
+                canvas.drawLine(this.wigglePlot.get(i - 1).getX(),
+                        this.wigglePlot.get(i - 1).getY(),
+                        this.wigglePlot.get(i).getX(),
+                        this.wigglePlot.get(i).getY()
                         , speechBoxOutline);
             }
 
-            canvas.drawLine(this.currentPlot.get(this.currentPlot.size() - 1).getX(),
-                    this.currentPlot.get(this.currentPlot.size() - 1).getY(),
-                    this.currentPlot.get(0).getX(),
-                    this.currentPlot.get(0).getY()
+            canvas.drawLine(this.wigglePlot.get(this.wigglePlot.size() - 1).getX(),
+                    this.wigglePlot.get(this.wigglePlot.size() - 1).getY(),
+                    this.wigglePlot.get(0).getX(),
+                    this.wigglePlot.get(0).getY()
                     , speechBoxOutline);
         }
     }
@@ -82,7 +84,9 @@ public class SpeechScrollerView extends View{
             paint.setTypeface(custom_font);
             paint.setTextSize(70);// change to class member
             paint.setColor(Color.MAGENTA);
-            canvas.drawText(this.textToDisplay, 60 - 8, 85, paint);
+            canvas.drawText(this.textToDisplay, (60 - 8) + this.randomTextWiggleOffset,
+                    85 + this.randomTextWiggleOffset,
+                    paint);
         }
 
     }
@@ -145,21 +149,30 @@ public class SpeechScrollerView extends View{
                 marginAndBorderRadius,
                 8,
                 22,
-                3
+                5
         );
 
-//        new Timer().scheduleAtFixedRate(new TimerTask() {
+        if(this.wiggleTimer == null){
+            this.wiggleTimer = new Timer();
+            this.wiggleTimer.scheduleAtFixedRate(new TimerTask() {
 
-//            @Override
-//            public void run() {
-        mHandler.postAtFrontOfQueue(new Runnable() {
-                    @Override
-                    public void run() {
-                        postInvalidate();
+                @Override
+                public void run() {
 
-                    }
-                });
-//            }
-//        }, 0, 100);
+                    wigglePlot = new SpeechBubblePlotManager().copyPlotArrAndWiggleByRange(currentPlot, 4);
+                    randomTextWiggleOffset = new SpeechBubblePlotManager().generateRandomNegOrPosNumberInRangeX(4);
+
+                    mHandler.postAtFrontOfQueue(new Runnable() {
+                        @Override
+                        public void run() {
+                            postInvalidate();
+
+                        }
+                    });
+                }
+            }, 0, 150);
+        }
+
+
     }
 }
