@@ -1,6 +1,7 @@
 package com.example.slurp.blackjackandroid.view;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.example.slurp.blackjackandroid.model.blackjack.Game;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
 import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Observable;
 import java.util.Observer;
@@ -174,6 +177,9 @@ public class BoardCanvasView extends View implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
+
+        this.playSounds((Game) observable);
+
         this.model = (Game) observable;
 
         this.mHandler.post(new Runnable() {
@@ -183,6 +189,23 @@ public class BoardCanvasView extends View implements Observer {
                 invalidate();
             }
         });
+    }
+
+    private void playSounds(Game newModelState){
+        // check prev and new model state to see if card placement sound should be played
+        if(this.model.getCurrentPlayer().getName().equals(this.playerName) &&
+                this.model.getCurrentPlayer().getHand().getCards().size() >= 1){
+
+            Log.d(this.getClass().getName(), "should play sound now");
+//            new Thread(
+//                    new PlaySoundThread(getContext(),
+//                            R.raw.card_placement,
+//                            0.8f)
+//            ).run();
+            SoundPlayerSingleton.getInstance()
+                    .play(getResources().openRawResourceFd(R.raw.card_placement));
+
+        }
     }
 
     public static int getResId(String resName, Class<?> c) {
