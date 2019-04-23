@@ -3,11 +3,14 @@ package com.example.slurp.blackjackandroid.view;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -18,11 +21,14 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.controller.Controller;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
+import com.example.slurp.blackjackandroid.model.blackjack.Hand;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
 
 import java.util.Observable;
@@ -44,8 +50,54 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
 
 
-        this.model = new Game(new Player(playerName, 10), new Player(computerName, 100000));
-        this.model.startGameTimer();
+        this.model = new Game(new Player(playerName, 29), new Player(computerName, 100000));
+        this.model.init(); // starts game timer
+        this.model.setGameListener(new Game.GameListener() {
+            @Override
+            public void onGameWin() {
+                // congratulate user
+                // store time to online score board
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(!isFinishing()){
+
+
+                            final EditText nameInput = new EditText(getApplicationContext());
+
+// Set the default text to a link of the Queen
+                            nameInput.setHint("nickname");
+
+                            new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle("submit your score online")
+                                        .setMessage("input your name")
+                                        .setView(nameInput)
+                                        .setCancelable(false)
+                                        .setPositiveButton(R.string.submit_score_ok,
+                                                new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // whatever...
+                                                        // go back to menu activity
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "your time is: " +
+                                                                        model.getPlayersTime() + "," +
+                                                                        "thx for trying the demo: " +
+                                                                        nameInput.getText(),
+                                                                Toast.LENGTH_LONG);
+                                                    }
+                                                })
+                                        .show();
+
+                        }
+                    }
+
+                }, 500);
+
+            }
+        });
+
         this.controller = new Controller(this.model);
 
         this.model.addObserver(this);

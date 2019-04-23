@@ -21,6 +21,11 @@ import java.util.logging.Handler;
 public class Game extends Observable implements Cloneable{
 
 
+    public interface GameListener{
+        void onGameWin();
+    }
+
+
     // mode = delay or no-delay, sync or a-sync
     private StopWatch gameTimer;
     private ArrayList<Player> players;
@@ -31,12 +36,17 @@ public class Game extends Observable implements Cloneable{
     private HashMap<Player, Integer> placedBets;
     private final int chipsNeededToWin = 30;
     private boolean roundIsOver = false;
+    private boolean playerHasEnoughChipsToWin = false;
+    private String nameOfPlayerA;
+    private GameListener gameListener;
 
-    public Game (Player playerNameA, Player playerNameB, Player... otherPlayerNames){
+    // in current model playerB represents the parsed in house you play against
+    public Game (Player playerA, Player playerB, Player... otherPlayerNames){
         super();
+        this.nameOfPlayerA = playerA.getName();
         players = new ArrayList<Player>();
-        players.add(playerNameA);
-        players.add(playerNameB);
+        players.add(playerA);
+        players.add(playerB);
         if (otherPlayerNames.length>0){
             for (Player other : otherPlayerNames){
                 players.add(other);
@@ -53,9 +63,17 @@ public class Game extends Observable implements Cloneable{
 //        isGameOver = false;
     }
 
+    public void setGameListener(GameListener gameListener) {
+        this.gameListener = gameListener;
+    }
+
     public void startGameTimer() {
         this.gameTimer = new StopWatch();
         this.gameTimer.start();
+    }
+
+    public void init(){
+        this.startGameTimer();
     }
 
     public void stopGameTimer(){
@@ -64,6 +82,10 @@ public class Game extends Observable implements Cloneable{
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isPlayerHasEnoughChipsToWin() {
+        return playerHasEnoughChipsToWin;
     }
 
     public void pauseGameTimer(){
@@ -108,7 +130,7 @@ public class Game extends Observable implements Cloneable{
 
         if(resetChips)
             try{
-                player = this.getPlayerByName("player");
+                player = this.getPlayerByName(this.nameOfPlayerA);
                 player.getChips().setCurrentBalance(chipsValue);
             }catch(Exception e){
                 System.out.println(e.getMessage());
@@ -217,7 +239,7 @@ public class Game extends Observable implements Cloneable{
 
             try {
                 playerValue = EnumToValueMapper.getHandIntValueFromHandValueEnum(
-                        this.getPlayerByName("player").getHand().getBestValue());
+                        this.getPlayerByName(this.nameOfPlayerA).getHand().getBestValue());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -254,8 +276,32 @@ public class Game extends Observable implements Cloneable{
             }
 
             this.setRoundIsOver(true);
+            this.checkPlayerHasEnoughChipsToWin();
 
             this.notifyView();
+        }
+    }
+
+    private void checkPlayerHasEnoughChipsToWin(){
+
+        Player player = null;
+
+        try {
+            player = this.getPlayerByName(this.nameOfPlayerA);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(player.getChips().getCurrentBalance() >
+                this.getChipsNeededToWin()){
+            this.playerHasEnoughChipsToWin = true;
+            try {
+                this.stopGameTimer();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(this.gameListener != null)
+                this.gameListener.onGameWin();
         }
     }
 
