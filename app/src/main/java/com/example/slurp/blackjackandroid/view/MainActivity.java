@@ -30,6 +30,7 @@ import com.example.slurp.blackjackandroid.controller.Controller;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
 import com.example.slurp.blackjackandroid.model.blackjack.Hand;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
+import com.example.slurp.blackjackandroid.utils.StopWatch;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -154,11 +155,12 @@ public class MainActivity extends AppCompatActivity implements Observer {
             @Override
             public void onBetMade(View v, int chipsValuePlaced) {
                 controller.setBetPlaced(chipsValuePlaced);
+                controller.bet();
             }
 
             @Override
             public void onReadyToPlay(View v) {
-                controller.bet();
+                controller.checkBetsArePlacedAndStartGame();
             }
         });
 
@@ -219,25 +221,26 @@ public class MainActivity extends AppCompatActivity implements Observer {
         });
 
 
-        final LinearLayout timerLayoutParent = findViewById(R.id.timer_parent_view);
-        ViewTreeObserver vtotimerLayoutParent = timerLayoutParent.getViewTreeObserver();
-
-        vtotimerLayoutParent.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                timerLayoutParent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int widthOfTimerLayoutContainer = timerLayoutParent.getWidth();
-                int heightOfTimerLayoutContainer = timerLayoutParent.getHeight();
-
-                StopWatchView stopWatchView = new StopWatchView(
-                        getApplicationContext(),
-                        model,
-                        widthOfTimerLayoutContainer,
-                        heightOfTimerLayoutContainer
-                );
-                timerLayoutParent.addView(stopWatchView);
-            }
-        });
+//        final LinearLayout timerLayoutParent = findViewById(R.id.timer_parent_view);
+//        ViewTreeObserver vtotimerLayoutParent = timerLayoutParent.getViewTreeObserver();
+//
+//        vtotimerLayoutParent.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                timerLayoutParent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                int widthOfTimerLayoutContainer = timerLayoutParent.getWidth();
+//                int heightOfTimerLayoutContainer = timerLayoutParent.getHeight();
+//
+//                StopWatchView stopWatchView = new StopWatchView(
+//                        getApplicationContext(),
+//                        model,
+//                        widthOfTimerLayoutContainer,
+//                        heightOfTimerLayoutContainer
+//                );
+//                timerLayoutParent.addView(stopWatchView);
+//            }
+//        });
+        new StopWatchViewManager(this, this.model);
 
 
 

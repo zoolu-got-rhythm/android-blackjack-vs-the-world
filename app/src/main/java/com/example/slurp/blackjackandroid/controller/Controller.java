@@ -33,16 +33,12 @@ public class Controller{
             System.out.println(e.getMessage());
         }
 
-        // this should be in view
-        if(playerChipsValue >= model.getChipsNeededToWin()) {
-            // do something when win
-        }
 
         // game over condition: reset game
-        if(playerChipsValue < 3 ){
-                this.model.resetGame(true, 3);
-                return;
-        }
+//        if(playerChipsValue < 3 ){
+//                this.model.resetGame(true, 3);
+//                return;
+//        }
 
         this.model.resetGame(false, 0); // chips value is irrelevant if resetChips bool is false
     }
@@ -80,10 +76,16 @@ public class Controller{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    model.dealCards(2, true);
                 }
             }
         }
+    }
+
+
+
+    public void checkBetsArePlacedAndStartGame(){
+        if(model.checkIfPlayerHasPlacedBetAndIsReadyToStartGame())
+            model.dealCards(2, true);
     }
 
 

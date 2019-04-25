@@ -10,46 +10,101 @@
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/hints_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"></LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/timer_parent_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:orientation="horizontal"></LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
+        android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/cards_view_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/hints_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:orientation="horizontal"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cards_view_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/chips_parent_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/timer_parent_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:background="#222222"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/TimeHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:textColor="@color/transparentPurple"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/bestTimerHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="best"
+                    android:textColor="@color/transparentPurple" />
+
+                <TextView
+                    android:id="@+id/bestTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="----"
+                    android:textColor="@color/transparentPurple" />
+
+                <TextView
+                    android:id="@+id/currentTimeHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="current"
+                    android:textColor="@color/transparentPurple" />
+
+                <TextView
+                    android:id="@+id/currentTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="----"
+                    android:textColor="@color/transparentPurple" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chips_parent_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout

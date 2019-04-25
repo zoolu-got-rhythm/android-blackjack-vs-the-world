@@ -25,6 +25,12 @@ public class Game extends Observable implements Cloneable{
         void onGameWin();
     }
 
+    private enum ChipsAmountType{
+        DOUBLE,
+        DOUBLE_AND_HALF, // double and a half
+        LOAN,
+        REFUND
+    }
 
     // mode = delay or no-delay, sync or a-sync
     private StopWatch gameTimer;
@@ -107,6 +113,15 @@ public class Game extends Observable implements Cloneable{
         return formattedTime;
     }
 
+    public boolean checkIfPlayerHasPlacedBetAndIsReadyToStartGame(){
+        try {
+            return this.getPlacedBets().containsKey(this.getPlayerByName(this.nameOfPlayerA));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void setRoundIsOver(boolean roundIsOver) {
         this.roundIsOver = roundIsOver;
     }
@@ -146,8 +161,10 @@ public class Game extends Observable implements Cloneable{
     public void placeChipsToEnterGame(Player player, int chipsAmount) throws Exception {
         if(chipsAmount < 3)
             throw new Exception("minimum buy in is 3 chips to play"); // make custom exception instead
+        player.getChips().removeChips(chipsAmount);
         placedBets.put(player, chipsAmount);
-//        this.notifyView();
+
+        this.notifyView();
     }
 
     public void dealCards(final int numberOfCardsInInitialShuffle, boolean shuffleFirst){
@@ -255,7 +272,7 @@ public class Game extends Observable implements Cloneable{
 
 
 
-
+            // may need to refactor code below this comment inside this method
 
             Player losingPlayer = null;
 
@@ -268,15 +285,30 @@ public class Game extends Observable implements Cloneable{
 
             // if not draw
             if(losingPlayer != null){
-                this.getPlayersInGame().remove(losingPlayer);
-                this.getPlayersInDeal().remove(losingPlayer);
-//                int chipsValue = placedBets.get(aPlayer);
-//                aPlayer.getChips().removeChips(chipsValue);
-                    this.addChipsToWinnerRemoveFromLoosers(this.getWinner());
+                this.getPlayersInGame().remove(losingPlayer); // needed?
+                this.getPlayersInDeal().remove(losingPlayer); // needed?
+            }
+
+
+            Player winningPlayer = this.getWinner();
+            // switch statement
+            // draw
+            if(winningPlayer == null){
+                this.addChipsToPlayer(aPlayer, ChipsAmountType.REFUND);
+            }else if(aPlayer.getHand().getBestValue() == HandValue.BLACKJACK){
+                this.addChipsToPlayer(winningPlayer, ChipsAmountType.DOUBLE_AND_HALF);
+            }else{
+                this.addChipsToPlayer(winningPlayer, ChipsAmountType.DOUBLE);
             }
 
             this.setRoundIsOver(true);
             this.checkPlayerHasEnoughChipsToWin();
+
+            // give player minimum chips if he's below 3
+            if(aPlayer.getChips().getCurrentBalance() < 3){
+                this.addChipsToPlayer(aPlayer, ChipsAmountType.LOAN);
+                Log.d("refund", "refunding");
+            }
 
             this.notifyView();
         }
@@ -313,11 +345,17 @@ public class Game extends Observable implements Cloneable{
             if (aPlayer.getHand().getBestValue() == HandValue.BUST) {
                 playersInGame.remove(aPlayer);
                 playersInDeal.remove(aPlayer);
-//                int chipsValue = placedBets.get(aPlayer);
-//                aPlayer.getChips().removeChips(chipsValue);
-                this.addChipsToWinnerRemoveFromLoosers(this.getWinner());
+
+                // give player minimum chips if he's below 3
+                if(aPlayer.getChips().getCurrentBalance() < 3){
+                    this.addChipsToPlayer(aPlayer, ChipsAmountType.LOAN);
+                    Log.d("refund", "refunding");
+                }
+
                 setRoundIsOver(true);
             }
+
+
             this.notifyView();
         }
     }
@@ -334,6 +372,7 @@ public class Game extends Observable implements Cloneable{
         return playersInDeal.size();
     }
 
+    @Nullable
     public Player getWinner(){
         Player theWinner = null;
 
@@ -370,17 +409,23 @@ public class Game extends Observable implements Cloneable{
         return theWinner;
     }
 
-    public void addChipsToWinnerRemoveFromLoosers(Player theWinner){
+    public void addChipsToPlayer(Player player, ChipsAmountType chipsAmountType){
         // give chips to winner, remove from loosers
-        for(int j = 0; j < players.size(); j++){
-            if(players.get(j) == theWinner){
-                int chipsValue = placedBets.get(theWinner);
-                players.get(j).getChips().addChips(chipsValue);
-                Log.d("chips val", Integer.toString(chipsValue));
-            }else{
-                int chipsValue = placedBets.get(players.get(j));
-                players.get(j).getChips().removeChips(chipsValue);
-            }
+
+        int chipsValue = placedBets.get(player);
+        switch (chipsAmountType){
+            case LOAN:
+                player.getChips().addChips(3);
+                break;
+            case DOUBLE:
+                player.getChips().addChips(chipsValue * 2);
+                break;
+            case REFUND:
+                player.getChips().addChips(chipsValue);
+                break;
+            case DOUBLE_AND_HALF:
+                player.getChips().addChips((int) Math.floor(chipsValue * 2.5));
+                break;
         }
     }
 
