@@ -58,7 +58,7 @@
                     android:id="@+id/TimeHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Time"
+                    android:text="Time ⧖"
                     android:textColor="@color/transparentPurple"
                     android:textStyle="bold" />
 

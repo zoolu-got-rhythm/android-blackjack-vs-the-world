@@ -157,7 +157,16 @@ public class CustomBettingView extends LinearLayout implements Observer{
         gameInProgParams.weight = 1;
         gameInProgTextView.setLayoutParams(gameInProgParams);
 
-        gameInProgTextView.setText("your go");
+
+        try {
+            gameInProgTextView.setText("bet is x" + Integer.toString(model.getPlacedBets().get(
+                    model.getPlayerByName(this.playerName)
+            )));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         gameInProgTextView.setTextSize(18f);
         gameInProgTextView.setBackgroundColor(Color.BLACK);
         gameInProgTextView.setTextColor(Color.YELLOW);
