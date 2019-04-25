@@ -16,6 +16,12 @@ public class SoundPlayerSingleton {
     private SoundPlayerSingleton(){
         this.mediaPlayer = new MediaPlayer();
         this.mediaPlayer.setVolume(0.8f, 0.8f);
+        this.mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+            }
+        });
     }
 
     public static SoundPlayerSingleton getInstance(){
@@ -25,6 +31,8 @@ public class SoundPlayerSingleton {
     }
 
     public void play(AssetFileDescriptor afd){
+//        if(this.mediaPlayer.isPlaying())
+//            this.mediaPlayer.release();
         this.mediaPlayer.reset();
         try {
             this.mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
@@ -36,6 +44,6 @@ public class SoundPlayerSingleton {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.mediaPlayer.start();
+
     }
 }

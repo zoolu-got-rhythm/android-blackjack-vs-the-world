@@ -391,6 +391,7 @@ public class Game extends Observable implements Cloneable{
         super.clearChanged();
     }
 
+    // not sure if this clone works
     @Override
     public Object clone() {
         Gson gson = new Gson();

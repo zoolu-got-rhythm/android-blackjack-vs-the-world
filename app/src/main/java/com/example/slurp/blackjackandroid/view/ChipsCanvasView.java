@@ -5,14 +5,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChipsCanvasView extends View implements Observer, ViewComponent {
     private int width, height;
@@ -97,6 +101,7 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
     public void update(Observable observable, Object o) {
 
         this.model = (Game) observable; // is this needed? shouldn't be?
+        this.playSounds();
 
         if(this.shouldComponentUpdate(this.model)){
             this.mHandler.post(new Runnable() {
@@ -106,6 +111,27 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
                     invalidate();
                 }
             });
+        }
+    }
+
+    private void playSounds(){
+        // check prev and new model state to see if card placement sound should be played
+        try {
+            if(this.model.getPlayerByName(this.playerName).getChips().getCurrentBalance() >
+                    this.prevChipsBalance){
+
+                Log.d(this.getClass().getName(), "should play sound now");
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        SoundPlayerSingleton.getInstance()
+                                .play(getResources().openRawResourceFd(R.raw.cha_ching));
+                    }
+                }, 100);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

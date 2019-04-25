@@ -33,6 +33,8 @@ import com.example.slurp.blackjackandroid.model.blackjack.Player;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements Observer {
 
@@ -50,13 +52,23 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
 
 
-        this.model = new Game(new Player(playerName, 29), new Player(computerName, 100000));
+        this.model = new Game(new Player(playerName, 10), new Player(computerName, 100000));
         this.model.init(); // starts game timer
         this.model.setGameListener(new Game.GameListener() {
             @Override
             public void onGameWin() {
                 // congratulate user
                 // store time to online score board
+
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        SoundPlayerSingleton.getInstance()
+                                .play(getResources().openRawResourceFd(R.raw.trumpet_fanfare));
+                    }
+                }, 800);
+
+
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -85,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                                                                         model.getPlayersTime() + "," +
                                                                         "thx for trying the demo: " +
                                                                         nameInput.getText(),
-                                                                Toast.LENGTH_LONG);
+                                                                Toast.LENGTH_LONG).show();
                                                     }
                                                 })
                                         .show();
