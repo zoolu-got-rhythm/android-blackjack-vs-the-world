@@ -85,7 +85,7 @@ public class SpeechScrollerView extends View{
             paint.setTextSize(70);// change to class member
             paint.setColor(Color.MAGENTA);
             canvas.drawText(this.textToDisplay, (60 - 8) + this.randomTextWiggleOffset,
-                    85 + this.randomTextWiggleOffset,
+                    135 + this.randomTextWiggleOffset,
                     paint);
         }
 
@@ -143,7 +143,7 @@ public class SpeechScrollerView extends View{
         int marginAndBorderRadius = 30;
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
-                new CustomPoint(60, 20),
+                new CustomPoint(60, 70),
                 widthAndHeightOfText.get("width") + (marginAndBorderRadius * 2),
                 100,
                 marginAndBorderRadius,

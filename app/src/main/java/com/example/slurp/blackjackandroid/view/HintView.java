@@ -30,10 +30,12 @@ public class HintView extends LinearLayout implements Observer{
 
         // am i using the right type of LayoutParams class currently using LinearLayout.LayoutParams
         ImageView faceView = new ImageView(this.getContext());
-        faceView.setBackgroundColor(Color.DKGRAY);
-        LinearLayout.LayoutParams faceViewParams = new LinearLayout.LayoutParams(1200, LayoutParams.MATCH_PARENT);
-        faceViewParams.weight = 5;
+        faceView.setBackgroundColor(Color.MAGENTA);
+        LinearLayout.LayoutParams faceViewParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        faceViewParams.weight = 3;
+
         faceView.setLayoutParams(faceViewParams);
+        faceView.setPadding(12, 12, 12, 12);
         faceView.setImageResource(R.drawable.tips_man);
 //        Bitmap bitmapOfTipsMan = BitmapFactory.decodeResource(getResources(), R.drawable.tips_man);
 
