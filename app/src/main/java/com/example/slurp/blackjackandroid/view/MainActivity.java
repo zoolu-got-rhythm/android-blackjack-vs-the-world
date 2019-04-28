@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private BoardCanvasView boardCanvasViewComputer, boardCanvasViewPlayer;
     final String playerName = "player", computerName = "house";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
