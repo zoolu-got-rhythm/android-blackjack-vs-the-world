@@ -57,6 +57,8 @@ public class BoardCanvasView extends View implements Observer {
 //        this.mPaint.setStrokeWidth(16f);
 //        this.mPaint.setStyle(Paint.Style.STROKE);
 
+
+
     }
 
     @Override
@@ -64,36 +66,44 @@ public class BoardCanvasView extends View implements Observer {
         // draw
 //            canvas.drawCircle(tap.getPoint().x, tap.getPoint().y, tap.getCurrentRadius(), this.mPaint);
 
-        final int offsetFromTop = 90;
+        final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
+        Log.d("pixel density of device value", Float.toString(DEVICE_DENSITY_SCALE));
+        ResponsiveSizes responsiveSizes = ResponsiveSizesFactory.getInstance()
+                .createResponsiveSizes(DEVICE_DENSITY_SCALE);
+
+
+        final int offsetFromTop = Math.round(30f * DEVICE_DENSITY_SCALE);
 
         Paint mBackgroundTilePaint = new Paint();
         int squareSizeX = this.width;
-        int squareSizeY = this.height - offsetFromTop + 2;
+        int squareSizeY = this.height - offsetFromTop;
         squareSizeX = squareSizeX / 20;
         squareSizeY = squareSizeY / 20;
 
-        for(int i = 0; i < 20; i++){
-            for(int j = 0; j < 20; j++){
+        for(int i = 0; i <= 20; i++){
+            for(int j = 0; j <= 20; j++){
                 if(j % 2 == 0){
                     mBackgroundTilePaint.setColor(i % 2 == 0 ? this.cardTableGreen1: this.cardTableGreen2);
                 }else{
                     mBackgroundTilePaint.setColor(i % 2 == 0 ? this.cardTableGreen2 : this.cardTableGreen1);
                 }
                 canvas.drawRect(new Rect(i * squareSizeX,
-                                j * (squareSizeY) + (offsetFromTop + 2), (i * squareSizeX) + squareSizeX,
-                                (j * squareSizeY) + squareSizeY + (offsetFromTop + 2)),
+                                j * (squareSizeY) + (offsetFromTop), (i * squareSizeX) + squareSizeX,
+                                (j * squareSizeY) + squareSizeY + (offsetFromTop)),
                         mBackgroundTilePaint);
             }
         }
 
         Paint playerNamePaint = new Paint();
         playerNamePaint.setColor(Color.BLACK);
-        canvas.drawRect(new Rect(0, 0, this.width - 2, offsetFromTop), playerNamePaint);
+        canvas.drawRect(new Rect(0, 0, this.width, offsetFromTop), playerNamePaint);
 
         Paint playerTextPaint = new Paint();
 
         playerTextPaint.setColor(this.playerName.toLowerCase().equals("player") ? Color.GREEN : Color.MAGENTA);
-        playerTextPaint.setTextSize(40);
+
+        int headerTextSize = Math.round(12f * DEVICE_DENSITY_SCALE);
+        playerTextPaint.setTextSize(headerTextSize);
 
         Player player = null;
         try {
@@ -121,13 +131,18 @@ public class BoardCanvasView extends View implements Observer {
                 !this.model.isGameOver() ?
                         "unknown" : player.getHand().getBestValue().toString().toLowerCase());
 
-        canvas.drawText(playerNameAndHandValue, 40, (offsetFromTop / 2) + 11.25f, playerTextPaint);
+        canvas.drawText(playerNameAndHandValue, 5 * DEVICE_DENSITY_SCALE, (offsetFromTop / 2) + (headerTextSize / 2), playerTextPaint);
 
 
+        // values dp to px for different handsets/devices
+        int cardWidth = Math.round(responsiveSizes.getCardWidthForThisDevice() * DEVICE_DENSITY_SCALE);
+        int cardHeight = Math.round(responsiveSizes.getCardHeightForThisDevice() * DEVICE_DENSITY_SCALE);
+        int xOffset = Math.round(20f * DEVICE_DENSITY_SCALE);
+        int cardMargin = Math.round(20f * DEVICE_DENSITY_SCALE);
+        int cardBorderSize = Math.round(8f * DEVICE_DENSITY_SCALE);
 
-        int cardWidth = 300;
-        int cardHeight = 350;
-        int xOffset = 20;
+        int cardOffSetFromTop = ((this.height - offsetFromTop) - cardHeight) / 2;
+
         int cardIndex = 0;
 
         for(PlayingCard card : player.getHand().getCards()){
@@ -147,23 +162,23 @@ public class BoardCanvasView extends View implements Observer {
             Paint cardShadowPaint = new Paint();
             cardShadowPaint.setColor(player.getName().equals("house") ? Color.MAGENTA : Color.GREEN);
             canvas.drawRoundRect(
-                    new RectF(xOffset - 15, (offsetFromTop + 100) - 15, xOffset + cardWidth + 15, (offsetFromTop + 100) + cardHeight + 15),
-                    15,
-                    15,
+                    new RectF(xOffset - cardBorderSize, (offsetFromTop + cardOffSetFromTop) - cardBorderSize, xOffset + cardWidth + cardBorderSize, (offsetFromTop + cardOffSetFromTop) + cardHeight + cardBorderSize),
+                    cardBorderSize,
+                    cardBorderSize,
                     cardShadowPaint);
 
             Paint cardBackgroundPaint = new Paint();
             cardBackgroundPaint.setColor(Color.WHITE);
             canvas.drawRoundRect(
-                    new RectF(xOffset, (offsetFromTop + 100), xOffset + cardWidth, (offsetFromTop + 100) + cardHeight),
-                    15,
-                    15,
+                    new RectF(xOffset, (offsetFromTop + cardOffSetFromTop), xOffset + cardWidth, (offsetFromTop + cardOffSetFromTop) + cardHeight),
+                    cardBorderSize,
+                    cardBorderSize,
                     cardBackgroundPaint);
 
             canvas.drawBitmap(bitmap, null,
-                    new Rect(xOffset, (offsetFromTop + 100), xOffset + cardWidth, (offsetFromTop + 100) + cardHeight), null);
+                    new Rect(xOffset, (offsetFromTop + cardOffSetFromTop), xOffset + cardWidth, (offsetFromTop + cardOffSetFromTop) + cardHeight), null);
 
-            xOffset += 100;
+            xOffset += Math.round(35f * DEVICE_DENSITY_SCALE);
             cardIndex++;
         }
 

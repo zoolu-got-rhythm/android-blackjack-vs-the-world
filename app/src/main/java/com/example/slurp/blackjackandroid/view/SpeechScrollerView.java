@@ -53,7 +53,7 @@ public class SpeechScrollerView extends View{
     private void drawAsLines(Canvas canvas){
         if(currentPlot != null){
             final Paint speechBoxOutline = new Paint();
-            speechBoxOutline.setStrokeWidth(11f);
+            speechBoxOutline.setStrokeWidth(14f);
             speechBoxOutline.setColor(Color.MAGENTA);
 
 
@@ -84,8 +84,8 @@ public class SpeechScrollerView extends View{
             paint.setTypeface(custom_font);
             paint.setTextSize(70);// change to class member
             paint.setColor(Color.MAGENTA);
-            canvas.drawText(this.textToDisplay, (60 - 8) + this.randomTextWiggleOffset,
-                    135 + this.randomTextWiggleOffset,
+            canvas.drawText(this.textToDisplay, (84 - 8) + this.randomTextWiggleOffset,
+                    130 + this.randomTextWiggleOffset,
                     paint);
         }
 
@@ -140,16 +140,26 @@ public class SpeechScrollerView extends View{
         HashMap<String, Integer> widthAndHeightOfText =
                 this.inferTextSizeOfFontAndMap(customFont, 70, textToDisplay);
 
-        int marginAndBorderRadius = 30;
+
+        final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
+        int marginAndBorderRadius = Math.round(15 * DEVICE_DENSITY_SCALE);
+
+
+        float xDp = 33 * DEVICE_DENSITY_SCALE;
+        float yDp = 22 * DEVICE_DENSITY_SCALE;
+        float speechBoxHeightDp = 40 * DEVICE_DENSITY_SCALE;
+
+        int speechTriangleWidthDp = (Math.round(12 * DEVICE_DENSITY_SCALE));
+
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
-                new CustomPoint(60, 70),
+                new CustomPoint(xDp, yDp),
                 widthAndHeightOfText.get("width") + (marginAndBorderRadius * 2),
-                100,
+                speechBoxHeightDp,
                 marginAndBorderRadius,
                 8,
-                22,
-                5
+                speechTriangleWidthDp,
+                1
         );
 
         if(this.wiggleTimer == null){
@@ -172,7 +182,5 @@ public class SpeechScrollerView extends View{
                 }
             }, 0, 150);
         }
-
-
     }
 }

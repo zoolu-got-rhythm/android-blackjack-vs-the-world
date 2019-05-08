@@ -123,14 +123,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="stick" />
+                android:text='"stick" 🎤' />
 
             <Button
                 android:id="@+id/cardBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="hit me" />
+                android:text='"hit me" 🎤' />
         </LinearLayout>
 
         <LinearLayout
