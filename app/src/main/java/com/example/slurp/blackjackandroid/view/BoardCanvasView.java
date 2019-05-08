@@ -67,6 +67,10 @@ public class BoardCanvasView extends View implements Observer {
 //            canvas.drawCircle(tap.getPoint().x, tap.getPoint().y, tap.getCurrentRadius(), this.mPaint);
 
         final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
+        Log.d("pixel density of device value", Float.toString(DEVICE_DENSITY_SCALE));
+        ResponsiveSizes responsiveSizes = ResponsiveSizesFactory.getInstance()
+                .createResponsiveSizes(DEVICE_DENSITY_SCALE);
+
 
         final int offsetFromTop = Math.round(30f * DEVICE_DENSITY_SCALE);
 
@@ -131,11 +135,13 @@ public class BoardCanvasView extends View implements Observer {
 
 
         // values dp to px for different handsets/devices
-        int cardWidth = Math.round(85f * DEVICE_DENSITY_SCALE);
-        int cardHeight = Math.round(100f * DEVICE_DENSITY_SCALE);
+        int cardWidth = Math.round(responsiveSizes.getCardWidthForThisDevice() * DEVICE_DENSITY_SCALE);
+        int cardHeight = Math.round(responsiveSizes.getCardHeightForThisDevice() * DEVICE_DENSITY_SCALE);
         int xOffset = Math.round(20f * DEVICE_DENSITY_SCALE);
         int cardMargin = Math.round(20f * DEVICE_DENSITY_SCALE);
         int cardBorderSize = Math.round(8f * DEVICE_DENSITY_SCALE);
+
+        int cardOffSetFromTop = ((this.height - offsetFromTop) - cardHeight) / 2;
 
         int cardIndex = 0;
 
@@ -156,7 +162,7 @@ public class BoardCanvasView extends View implements Observer {
             Paint cardShadowPaint = new Paint();
             cardShadowPaint.setColor(player.getName().equals("house") ? Color.MAGENTA : Color.GREEN);
             canvas.drawRoundRect(
-                    new RectF(xOffset - cardBorderSize, (offsetFromTop + cardMargin) - cardBorderSize, xOffset + cardWidth + cardBorderSize, (offsetFromTop + cardMargin) + cardHeight + cardBorderSize),
+                    new RectF(xOffset - cardBorderSize, (offsetFromTop + cardOffSetFromTop) - cardBorderSize, xOffset + cardWidth + cardBorderSize, (offsetFromTop + cardOffSetFromTop) + cardHeight + cardBorderSize),
                     cardBorderSize,
                     cardBorderSize,
                     cardShadowPaint);
@@ -164,13 +170,13 @@ public class BoardCanvasView extends View implements Observer {
             Paint cardBackgroundPaint = new Paint();
             cardBackgroundPaint.setColor(Color.WHITE);
             canvas.drawRoundRect(
-                    new RectF(xOffset, (offsetFromTop + cardMargin), xOffset + cardWidth, (offsetFromTop + cardMargin) + cardHeight),
+                    new RectF(xOffset, (offsetFromTop + cardOffSetFromTop), xOffset + cardWidth, (offsetFromTop + cardOffSetFromTop) + cardHeight),
                     cardBorderSize,
                     cardBorderSize,
                     cardBackgroundPaint);
 
             canvas.drawBitmap(bitmap, null,
-                    new Rect(xOffset, (offsetFromTop + cardMargin), xOffset + cardWidth, (offsetFromTop + cardMargin) + cardHeight), null);
+                    new Rect(xOffset, (offsetFromTop + cardOffSetFromTop), xOffset + cardWidth, (offsetFromTop + cardOffSetFromTop) + cardHeight), null);
 
             xOffset += Math.round(35f * DEVICE_DENSITY_SCALE);
             cardIndex++;
