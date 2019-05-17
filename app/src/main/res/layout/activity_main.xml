@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
-                android:background="#222222"
+                android:background="#000"
                 android:orientation="vertical">
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Time ⧖"
-                    android:textColor="@color/transparentPurple"
+                    android:textColor="#edde0c"
                     android:textStyle="bold" />
 
                 <TextView
@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="best"
-                    android:textColor="@color/transparentPurple" />
+                    android:textColor="#edde0c" />
 
                 <TextView
                     android:id="@+id/bestTime"
@@ -75,14 +75,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="----"
-                    android:textColor="@color/transparentPurple" />
+                    android:textColor="#edde0c" />
 
                 <TextView
                     android:id="@+id/currentTimeHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="current"
-                    android:textColor="@color/transparentPurple" />
+                    android:textColor="#edde0c" />
 
                 <TextView
                     android:id="@+id/currentTime"
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:text="----"
-                    android:textColor="@color/transparentPurple" />
+                    android:textColor="#edde0c" />
 
             </LinearLayout>
 
@@ -99,6 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="@android:color/holo_green_light"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -123,14 +124,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text='"stick" 🎤' />
+                android:text='"stick" 🗣' />
 
             <Button
                 android:id="@+id/cardBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text='"hit me" 🎤' />
+                android:text='"hit me" 🗣' />
         </LinearLayout>
 
         <LinearLayout

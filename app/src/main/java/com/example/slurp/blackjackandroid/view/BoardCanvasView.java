@@ -145,6 +145,8 @@ public class BoardCanvasView extends View implements Observer {
 
         int cardIndex = 0;
 
+//        Log.d("green", Integer.toString(Color.G))
+
         for(PlayingCard card : player.getHand().getCards()){
 
             // find cardImageResourceId at runtime

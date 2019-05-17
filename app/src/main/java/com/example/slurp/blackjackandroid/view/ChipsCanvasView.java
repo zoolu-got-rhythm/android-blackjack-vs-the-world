@@ -13,6 +13,7 @@ import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
 
+import java.util.InputMismatchException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
@@ -50,7 +51,7 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
     @Override
     protected void onDraw(android.graphics.Canvas canvas) {
         Paint backgroundColour = new Paint();
-        backgroundColour.setColor(Color.GRAY);
+        backgroundColour.setColor(Color.DKGRAY);
         canvas.drawRect(new Rect(0, 0, this.width, this.height), backgroundColour);
 
         Paint mBackgroundTilePaint = new Paint();
@@ -77,6 +78,11 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
         int chipWidth = this.width / 2;
         int chipHeight = this.height;  // amount to win
 
+        Paint chipStripesPaint = new Paint();
+        chipStripesPaint.setColor(Color.GREEN);
+
+        int numberOfCasinoChipStripes = 3;
+
         Player player = null;
         try {
             player = this.model.getPlayerByName(this.playerName);
@@ -86,14 +92,28 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
 
         int nToSubtractFromRanXoffsetToCreateNegativeAndPositiveNumber = (chipWidth / 4) / 2;
 
+        int stripWidth = (int) this.stripWidth(chipWidth, numberOfCasinoChipStripes);
+
         int randomXOffset = 0;
         for(int i = 0; i <= player.getChips().getCurrentBalance(); i++){
             randomXOffset = (int) Math.round(Math.random() * chipWidth / 4) -
                     nToSubtractFromRanXoffsetToCreateNegativeAndPositiveNumber;
                 canvas.drawRect(new Rect((chipWidth / 2) + randomXOffset,
-                                this.height - (i * (this.height / 30)),
+                        this.height - (i * (this.height / 30)),
                         this.width - (chipWidth / 2) + randomXOffset,
-                        this.height - (i * (this.height / 30)) + (this.height / 30) - 1), chipPaint);
+                        this.height - (i * (this.height / 30)) + (this.height / 30) - 1),
+                        chipPaint);
+
+                for(int j = 1; j <= numberOfCasinoChipStripes ; j++){
+
+                    float stripStartingXPosition = this.plotStripXStart(chipWidth, numberOfCasinoChipStripes, j);
+                    canvas.drawRect(new Rect(chipWidth / 2 + randomXOffset + Math.round(stripStartingXPosition),
+                            this.height - (i * (this.height / 30)),
+                                    chipWidth / 2 + randomXOffset + (Math.round(stripStartingXPosition) +
+                                            stripWidth),
+                            this.height - (i * (this.height / 30)) + (this.height / 30) - 1),
+                            chipStripesPaint);
+                }
         }
 
         Paint numberOfChipsPaint = new Paint();
@@ -103,6 +123,25 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
                 this.height - (player.getChips().getCurrentBalance() * (this.height / 30)) - 15,
                 numberOfChipsPaint);
 
+    }
+
+//    private float placePokerChipStrip(float w, float nOfStrips, int increment){
+//        if(increment <= 0)
+//            throw new InputMismatchException("int value: increment must be greater than 0");
+//        return ((w / (nOfStrips + 1)) * increment) - ((w / (nOfStrips + 1)) / 2);
+//    }
+
+    private float plotStripXStart(float w, int nOfStrips, int i){
+        float divs = w / (nOfStrips + 1);
+        float intialX = divs * i;
+        float xMinusHalfOfStripeWidth = intialX - (stripWidth(w, nOfStrips) / 2);
+        return xMinusHalfOfStripeWidth;
+    }
+
+    private float stripWidth(float w, int nOfStrips){
+        int divBy = (nOfStrips + 1) * 2;
+        float divs = w / divBy;
+        return divs;
     }
 
     @Override
