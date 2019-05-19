@@ -25,8 +25,11 @@ public class ResponsiveSizesFactory {
         if(devicePixelDensityScale >= 2.0) // xhdpi base
             responsiveSizes = new XhdipSizes();
 
-        if(devicePixelDensityScale >= 3.0) // xxhdpi base
+        if(devicePixelDensityScale >= 3.0){
+            System.out.println(devicePixelDensityScale);
+            // xxhdpi base
             responsiveSizes = new XxhdpiSizes();
+        }
 
         return responsiveSizes;
     }

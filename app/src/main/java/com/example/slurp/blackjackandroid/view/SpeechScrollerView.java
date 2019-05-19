@@ -30,12 +30,18 @@ public class SpeechScrollerView extends View{
     private String textToDisplay;
     private float randomTextWiggleOffset;
     private Timer wiggleTimer;
+    private ResponsiveSizes responsiveSizes;
+    final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
 
 
     public SpeechScrollerView(Context context) {
         super(context);
 
         this.mHandler = new Handler();
+
+
+        this.responsiveSizes = ResponsiveSizesFactory.getInstance()
+                .createResponsiveSizes(DEVICE_DENSITY_SCALE);
 
         LinearLayout.LayoutParams hintTextViewParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -76,16 +82,26 @@ public class SpeechScrollerView extends View{
 
     private void drawFont(Canvas canvas){
 
+        int marginAndBorderRadius = Math.round(
+                responsiveSizes.getSpeechBubbleMargin() * DEVICE_DENSITY_SCALE
+        );
+
         // put in constructor
         AssetManager am = getContext().getAssets();
         Typeface custom_font = Typeface.createFromAsset(am,  "fonts/Dokdo-Regular.ttf");
         if(textToDisplay != null){
             Paint paint = new Paint();
             paint.setTypeface(custom_font);
-            paint.setTextSize(70);// change to class member
+            paint.setTextSize(this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE);// change to class member
             paint.setColor(Color.MAGENTA);
-            canvas.drawText(this.textToDisplay, (84 - 8) + this.randomTextWiggleOffset,
-                    130 + this.randomTextWiggleOffset,
+            canvas.drawText(this.textToDisplay,
+                    (this.responsiveSizes.getStartingXPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE) -
+                            marginAndBorderRadius +
+                            this.randomTextWiggleOffset,
+                    (this.responsiveSizes.getStartingYPosForSpeechBubblePlot() *
+                            DEVICE_DENSITY_SCALE) +
+                            ((this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE) / 2) +
+                            this.randomTextWiggleOffset,
                     paint);
         }
 
@@ -134,27 +150,34 @@ public class SpeechScrollerView extends View{
 
         this.textToDisplay = textToDisplay;
 
+
+
+
         AssetManager am = getContext().getAssets();
         Typeface customFont = Typeface.createFromAsset(am,  "fonts/Dokdo-Regular.ttf");
 
         HashMap<String, Integer> widthAndHeightOfText =
-                this.inferTextSizeOfFontAndMap(customFont, 70, textToDisplay);
+                this.inferTextSizeOfFontAndMap(customFont,
+                        responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE,
+                        textToDisplay);
 
 
-        final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
-        int marginAndBorderRadius = Math.round(15 * DEVICE_DENSITY_SCALE);
+        int marginAndBorderRadius = Math.round(
+                responsiveSizes.getSpeechBubbleMargin() * DEVICE_DENSITY_SCALE
+        );
 
 
-        float xDp = 33 * DEVICE_DENSITY_SCALE;
-        float yDp = 22 * DEVICE_DENSITY_SCALE;
-        float speechBoxHeightDp = 40 * DEVICE_DENSITY_SCALE;
+        float xDp = responsiveSizes.getStartingXPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE;
+        float yDp = responsiveSizes.getStartingYPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE;
+        float speechBoxHeightDp = widthAndHeightOfText.get("height");
 
-        int speechTriangleWidthDp = (Math.round(12 * DEVICE_DENSITY_SCALE));
+        int speechTriangleWidthDp = (Math.round(
+                responsiveSizes.getSpeechBubbleTriangleWidth() * DEVICE_DENSITY_SCALE));
 
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
                 new CustomPoint(xDp, yDp),
-                widthAndHeightOfText.get("width") + (marginAndBorderRadius * 2),
+                widthAndHeightOfText.get("width"),
                 speechBoxHeightDp,
                 marginAndBorderRadius,
                 8,

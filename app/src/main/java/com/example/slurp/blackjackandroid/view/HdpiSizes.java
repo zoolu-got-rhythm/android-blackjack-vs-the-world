@@ -11,4 +11,29 @@ public class HdpiSizes implements ResponsiveSizes {
     public float getCardHeightForThisDevice() {
         return 100f;
     }
+
+    @Override
+    public float getStartingXPosForSpeechBubblePlot() {
+        return 0;
+    }
+
+    @Override
+    public float getStartingYPosForSpeechBubblePlot() {
+        return 0;
+    }
+
+    @Override
+    public float getSpeechBubbleTextSize() {
+        return 0;
+    }
+
+    @Override
+    public float getSpeechBubbleTriangleWidth() {
+        return 0;
+    }
+
+    @Override
+    public float getSpeechBubbleMargin() {
+        return 0;
+    }
 }

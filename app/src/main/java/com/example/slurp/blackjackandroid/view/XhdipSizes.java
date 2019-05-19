@@ -10,4 +10,29 @@ public class XhdipSizes implements ResponsiveSizes{
     public float getCardHeightForThisDevice() {
         return 150f;
     }
+
+    @Override
+    public float getStartingXPosForSpeechBubblePlot() {
+        return 32;
+    }
+
+    @Override
+    public float getStartingYPosForSpeechBubblePlot() {
+        return 22;
+    }
+
+    @Override
+    public float getSpeechBubbleTextSize() {
+        return 30;
+    }
+
+    @Override
+    public float getSpeechBubbleTriangleWidth() {
+        return 12;
+    }
+
+    @Override
+    public float getSpeechBubbleMargin() {
+        return 15;
+    }
 }

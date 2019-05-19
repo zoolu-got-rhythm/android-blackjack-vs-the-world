@@ -81,7 +81,7 @@ public class ChipsCanvasView extends View implements Observer, ViewComponent {
         Paint chipStripesPaint = new Paint();
         chipStripesPaint.setColor(Color.GREEN);
 
-        int numberOfCasinoChipStripes = 3;
+        int numberOfCasinoChipStripes = 2;
 
         Player player = null;
         try {
