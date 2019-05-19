@@ -92,26 +92,24 @@ public class SpeechScrollerView extends View{
         if(textToDisplay != null){
             Paint paint = new Paint();
             paint.setTypeface(custom_font);
-            paint.setTextSize(this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE);// change to class member
+            paint.setTextSize(this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE); // change to class member
             paint.setColor(Color.MAGENTA);
             canvas.drawText(this.textToDisplay,
-                    (this.responsiveSizes.getStartingXPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE) -
-                            marginAndBorderRadius +
+                    ((this.responsiveSizes.getStartingXPosForSpeechBubblePlot() - 3) * DEVICE_DENSITY_SCALE) +
                             this.randomTextWiggleOffset,
                     (this.responsiveSizes.getStartingYPosForSpeechBubblePlot() *
                             DEVICE_DENSITY_SCALE) +
                             ((this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE) / 2) +
+                            (marginAndBorderRadius) +
                             this.randomTextWiggleOffset,
                     paint);
         }
-
     }
 
     private void drawAsDots(Canvas canvas){
 
         int transPink = ContextCompat.getColor(getContext(), R.color.transparentPink);
         int transPurple = ContextCompat.getColor(getContext(), R.color.transparentPurple);
-
 
         int dotSize = 4;
         if(currentPlot != null){
@@ -161,15 +159,13 @@ public class SpeechScrollerView extends View{
                         responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE,
                         textToDisplay);
 
-
         int marginAndBorderRadius = Math.round(
                 responsiveSizes.getSpeechBubbleMargin() * DEVICE_DENSITY_SCALE
         );
 
-
         float xDp = responsiveSizes.getStartingXPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE;
         float yDp = responsiveSizes.getStartingYPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE;
-        float speechBoxHeightDp = widthAndHeightOfText.get("height");
+//        float speechBoxHeightDp = widthAndHeightOfText.get("height");
 
         int speechTriangleWidthDp = (Math.round(
                 responsiveSizes.getSpeechBubbleTriangleWidth() * DEVICE_DENSITY_SCALE));
@@ -177,8 +173,8 @@ public class SpeechScrollerView extends View{
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
                 new CustomPoint(xDp, yDp),
-                widthAndHeightOfText.get("width"),
-                speechBoxHeightDp,
+                widthAndHeightOfText.get("width") + (marginAndBorderRadius * 2),
+                widthAndHeightOfText.get("height") + (marginAndBorderRadius * 2),
                 marginAndBorderRadius,
                 8,
                 speechTriangleWidthDp,
