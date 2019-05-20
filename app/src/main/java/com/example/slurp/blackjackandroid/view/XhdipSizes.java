@@ -23,7 +23,7 @@ public class XhdipSizes implements ResponsiveSizes{
 
     @Override
     public float getSpeechBubbleTextSize() {
-        return 30;
+        return 27;
     }
 
     @Override

@@ -95,12 +95,13 @@ public class SpeechScrollerView extends View{
             paint.setTextSize(this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE); // change to class member
             paint.setColor(Color.MAGENTA);
             canvas.drawText(this.textToDisplay,
-                    ((this.responsiveSizes.getStartingXPosForSpeechBubblePlot() - 3) * DEVICE_DENSITY_SCALE) +
+                    ((this.responsiveSizes.getStartingXPosForSpeechBubblePlot() - 3) * DEVICE_DENSITY_SCALE) -
+                            (marginAndBorderRadius * 0.125f) +
                             this.randomTextWiggleOffset,
                     (this.responsiveSizes.getStartingYPosForSpeechBubblePlot() *
                             DEVICE_DENSITY_SCALE) +
                             ((this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE) / 2) +
-                            (marginAndBorderRadius) +
+                            (marginAndBorderRadius * 0.875f) +
                             this.randomTextWiggleOffset,
                     paint);
         }
@@ -173,8 +174,8 @@ public class SpeechScrollerView extends View{
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
                 new CustomPoint(xDp, yDp),
-                widthAndHeightOfText.get("width") + (marginAndBorderRadius * 2),
-                widthAndHeightOfText.get("height") + (marginAndBorderRadius * 2),
+                widthAndHeightOfText.get("width") + (marginAndBorderRadius * 1.75f),
+                widthAndHeightOfText.get("height") + (marginAndBorderRadius * 1.75f),
                 marginAndBorderRadius,
                 8,
                 speechTriangleWidthDp,
