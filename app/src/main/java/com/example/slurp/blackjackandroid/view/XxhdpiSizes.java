@@ -23,7 +23,7 @@ public class XxhdpiSizes implements ResponsiveSizes{
 
     @Override
     public float getSpeechBubbleTextSize() {
-        return 70;
+        return 29;
     }
 
     @Override
@@ -34,6 +34,11 @@ public class XxhdpiSizes implements ResponsiveSizes{
     @Override
     public float getSpeechBubbleMargin() {
         return 15;
+    }
+
+    @Override
+    public float getSpeechBubbleLineThickness() {
+        return 18;
     }
 
 }

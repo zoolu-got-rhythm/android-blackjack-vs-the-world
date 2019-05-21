@@ -9,4 +9,5 @@ public interface ResponsiveSizes {
     public float getSpeechBubbleTextSize();
     public float getSpeechBubbleTriangleWidth();
     public float getSpeechBubbleMargin();
+    public float getSpeechBubbleLineThickness();
 }

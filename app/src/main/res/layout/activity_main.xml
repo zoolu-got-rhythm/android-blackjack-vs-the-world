@@ -52,6 +52,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:background="#000"
+                android:padding="5sp"
                 android:orientation="vertical">
 
                 <TextView
@@ -60,37 +61,62 @@
                     android:layout_height="wrap_content"
                     android:text="Time ⧖"
                     android:textColor="#edde0c"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="100sp"
+                    android:autoSizeStepGranularity="2sp" />
 
                 <TextView
                     android:id="@+id/bestTimerHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="best"
-                    android:textColor="#edde0c" />
+                    android:textColor="#edde0c"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="100sp"
+                    android:autoSizeStepGranularity="2sp"/>
 
                 <TextView
                     android:id="@+id/bestTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="20sp"
                     android:text="----"
-                    android:textColor="#edde0c" />
+                    android:textColor="#edde0c"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="100sp"
+                    android:autoSizeStepGranularity="2sp"/>
 
                 <TextView
                     android:id="@+id/currentTimeHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="current"
-                    android:textColor="#edde0c" />
+                    android:textColor="#edde0c"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="100sp"
+                    android:autoSizeStepGranularity="2sp"/>
 
                 <TextView
                     android:id="@+id/currentTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="20sp"
                     android:text="----"
-                    android:textColor="#edde0c" />
+                    android:textColor="#edde0c"
+                    android:layout_weight="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeMaxTextSize="100sp"
+                    android:autoSizeStepGranularity="2sp"/>
 
             </LinearLayout>
 
@@ -124,14 +150,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text='"stick" 🗣' />
+                android:text='stick' />
 
             <Button
                 android:id="@+id/cardBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text='"hit me" 🗣' />
+                android:text='hit me' />
         </LinearLayout>
 
         <LinearLayout

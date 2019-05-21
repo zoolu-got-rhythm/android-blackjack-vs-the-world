@@ -27,7 +27,7 @@ public class StopWatchViewManager implements Observer{
         final TextView currentTimeTextView = activity.findViewById(R.id.currentTime);
 
         TextView bestTimeTextView = (TextView) activity.findViewById(R.id.bestTime);
-        bestTimeTextView.setText("UNKNOWN");
+        bestTimeTextView.setText("unknown");
 
 
         new Timer().scheduleAtFixedRate(new TimerTask() {

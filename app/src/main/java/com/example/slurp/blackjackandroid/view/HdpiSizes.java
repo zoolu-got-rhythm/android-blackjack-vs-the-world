@@ -14,26 +14,31 @@ public class HdpiSizes implements ResponsiveSizes {
 
     @Override
     public float getStartingXPosForSpeechBubblePlot() {
-        return 0;
+        return 32;
     }
 
     @Override
     public float getStartingYPosForSpeechBubblePlot() {
-        return 0;
+        return 13;
     }
 
     @Override
     public float getSpeechBubbleTextSize() {
-        return 0;
+        return 19;
     }
 
     @Override
     public float getSpeechBubbleTriangleWidth() {
-        return 0;
+        return 12;
     }
 
     @Override
     public float getSpeechBubbleMargin() {
-        return 0;
+        return 15;
+    }
+
+    @Override
+    public float getSpeechBubbleLineThickness() {
+        return 8;
     }
 }
