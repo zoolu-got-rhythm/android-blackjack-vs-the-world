@@ -38,6 +38,6 @@ public class XhdipSizes implements ResponsiveSizes{
 
     @Override
     public float getSpeechBubbleLineThickness() {
-        return 14;
+        return 6;
     }
 }

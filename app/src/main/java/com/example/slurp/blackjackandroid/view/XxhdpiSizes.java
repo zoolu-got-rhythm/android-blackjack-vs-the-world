@@ -38,7 +38,7 @@ public class XxhdpiSizes implements ResponsiveSizes{
 
     @Override
     public float getSpeechBubbleLineThickness() {
-        return 18;
+        return 6;
     }
 
 }

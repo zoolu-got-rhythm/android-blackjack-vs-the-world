@@ -59,7 +59,9 @@ public class SpeechScrollerView extends View{
     private void drawAsLines(Canvas canvas){
         if(currentPlot != null){
             final Paint speechBoxOutline = new Paint();
-            speechBoxOutline.setStrokeWidth(this.responsiveSizes.getSpeechBubbleLineThickness());
+            speechBoxOutline.setStrokeWidth(
+                    this.responsiveSizes.getSpeechBubbleLineThickness() *
+                    DEVICE_DENSITY_SCALE);
             speechBoxOutline.setColor(Color.MAGENTA);
 
 
