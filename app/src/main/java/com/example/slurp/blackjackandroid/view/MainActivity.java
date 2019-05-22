@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
         drawCardButton = findViewById(R.id.cardBtn);
         drawCardButtonAnimator = this.blinkAnimationEffect(drawCardButton);
-        drawCardButton.setBackgroundColor(Color.DKGRAY);
+//        drawCardButton.setBackgroundColor(Color.DKGRAY);
         drawCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
         stickButton = findViewById(R.id.stayBtn);
         stickButtonAnimator = this.blinkAnimationEffect(stickButton);
-        stickButton.setBackgroundColor(Color.DKGRAY);
+//        stickButton.setBackgroundColor(Color.DKGRAY);
         stickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

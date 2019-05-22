@@ -39,6 +39,6 @@ public class HdpiSizes implements ResponsiveSizes {
 
     @Override
     public float getSpeechBubbleLineThickness() {
-        return 8;
+        return 6;
     }
 }
