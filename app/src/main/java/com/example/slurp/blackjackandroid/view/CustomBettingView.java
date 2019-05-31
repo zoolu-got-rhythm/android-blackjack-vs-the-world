@@ -1,5 +1,6 @@
 package com.example.slurp.blackjackandroid.view;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -23,6 +24,7 @@ public class CustomBettingView extends LinearLayout implements Observer{
     private CustomBettingView.OnBettingListener bettingListener;
     private Game model;
     private String playerName;
+    private AnimationManager betButtonAnimatorManager, playButtonAnimatorManager, chipsOkButtonAnimatorManager;
 
     public CustomBettingView(Context context, String playerName) {
         super(context);
@@ -68,6 +70,9 @@ public class CustomBettingView extends LinearLayout implements Observer{
             }
         });
         this.addView(startButton);
+
+        this.betButtonAnimatorManager = new AnimationManager(getContext(), startButton);
+        this.betButtonAnimatorManager.start();
 
     }
 
@@ -120,6 +125,12 @@ public class CustomBettingView extends LinearLayout implements Observer{
 
         okButton.setText("ok");
         this.addView(okButton);
+
+//        this.chipsOkButtonAnimator = AnimatorHelper.blinkAnimationEffect(okButton);
+//        this.chipsOkButtonAnimator.start();
+
+        this.chipsOkButtonAnimatorManager = new AnimationManager(getContext(), okButton);
+        this.chipsOkButtonAnimatorManager.start();
     }
 
     private void createPlayButton(){
@@ -146,6 +157,9 @@ public class CustomBettingView extends LinearLayout implements Observer{
             }
         });
         this.addView(playButton);
+
+        this.playButtonAnimatorManager = new AnimationManager(getContext(), playButton);
+        this.playButtonAnimatorManager.start();
     }
 
     private void createGameInProgressTextView(){

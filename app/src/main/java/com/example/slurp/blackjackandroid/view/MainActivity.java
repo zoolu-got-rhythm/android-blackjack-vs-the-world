@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private Game model;
     private Controller controller;
     private Button betButton, drawCardButton, stickButton;
-    private ObjectAnimator betButtonAnimator, drawCardButtonAnimator, stickButtonAnimator;
+    private AnimationManager betButtonAnimatorManager, drawCardButtonAnimatorManager, stickButtonAnimatorManager;
     private BoardCanvasView boardCanvasViewComputer, boardCanvasViewPlayer;
     final String playerName = "player", computerName = "house";
 
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 //        });
 
         drawCardButton = findViewById(R.id.cardBtn);
-        drawCardButtonAnimator = this.blinkAnimationEffect(drawCardButton);
+        drawCardButtonAnimatorManager = new AnimationManager(getApplicationContext(), drawCardButton);
 //        drawCardButton.setBackgroundColor(Color.DKGRAY);
         drawCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         });
 
         stickButton = findViewById(R.id.stayBtn);
-        stickButtonAnimator = this.blinkAnimationEffect(stickButton);
+        stickButtonAnimatorManager = new AnimationManager(getApplicationContext(), stickButton);
 //        stickButton.setBackgroundColor(Color.DKGRAY);
         stickButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,18 +294,18 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 !model.isGameOver()){
 //            this.betButton.setTextColor(Color.GREEN);
             this.drawCardButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
-            drawCardButtonAnimator.start();
+            drawCardButtonAnimatorManager.start();
         }else if(isPlayersTurn &&
                 model.getPlacedBets().size() == 2 &&
                 !areInitialCardsDealt &&
                 !model.isGameOver()){
             this.drawCardButton.setTextColor(Color.YELLOW);
             this.drawCardButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            drawCardButtonAnimator.pause();
+            drawCardButtonAnimatorManager.pause();
         }else{
             this.drawCardButton.setTextColor(Color.RED);
             this.drawCardButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            drawCardButtonAnimator.pause();
+            drawCardButtonAnimatorManager.pause();
         }
     }
 
@@ -323,29 +323,25 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 !model.isGameOver()){
 //            this.betButton.setTextColor(Color.GREEN);
             this.stickButton.setPaintFlags(Paint.LINEAR_TEXT_FLAG);
-            stickButtonAnimator.start();
+            stickButtonAnimatorManager.start();
         }else if(isPlayersTurn &&
                 model.getPlacedBets().size() == 2 &&
                 !areInitialCardsDealt &&
                 !model.isGameOver()){
             this.stickButton.setTextColor(Color.YELLOW);
             this.stickButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            stickButtonAnimator.pause();
+            stickButtonAnimatorManager.pause();
         }else{
             this.stickButton.setTextColor(Color.RED);
             this.stickButton.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            stickButtonAnimator.pause();
+            stickButtonAnimatorManager.pause();
         }
     }
 
-    private ObjectAnimator blinkAnimationEffect(Button btn){
-        ObjectAnimator anim = ObjectAnimator.ofInt(btn, "textColor", Color.DKGRAY,
-                Color.GREEN, Color.DKGRAY);
-        anim.setDuration(700);
-        anim.setEvaluator(new ArgbEvaluator());
-        anim.setRepeatMode(ValueAnimator.REVERSE);
-        anim.setRepeatCount(Animation.INFINITE);
-        return anim;
+    private void manageBetButtonState(){
+
     }
+
+
 
 }
