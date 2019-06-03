@@ -45,4 +45,8 @@ public class MenuHintView extends LinearLayout {
 
         this.speechScrollerView.drawDialogueBox(title);
     }
+
+    public SpeechScrollerView getSpeechScrollerView() {
+        return speechScrollerView;
+    }
 }
