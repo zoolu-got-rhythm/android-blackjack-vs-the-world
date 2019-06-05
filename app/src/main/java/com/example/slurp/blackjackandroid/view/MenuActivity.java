@@ -26,6 +26,8 @@ public class MenuActivity extends AppCompatActivity {
     private List<ScoreListItem> scoreListItems;
     private AnimationManager mPlayButtonAnimationManager;
     private boolean isCountingDownFlag = false;
+    private final String MENU_TITLE = "blackjack vs the world";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +35,9 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
 
+
         final LinearLayout hintsLayoutParent = findViewById(R.id.title_container);
-        final MenuHintView menuHintView = new MenuHintView(getApplicationContext());
+        final MenuHintView menuHintView = new MenuHintView(getApplicationContext(), MENU_TITLE);
         hintsLayoutParent.addView(menuHintView);
 
         final Button playButton = findViewById(R.id.playButton);
@@ -58,6 +61,7 @@ public class MenuActivity extends AppCompatActivity {
                                 mCountDownTimer.cancel();
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
+                                finish();
                             }else{
                                 menuHintView.getSpeechScrollerView().drawDialogueBox(
                                         IntegerToWord.convert(countDown).toUpperCase());
@@ -69,6 +73,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        // load score data from sql lite or sharedPrefs into list
         this.scoreListItems = new ArrayList<>();
         this.scoreListItems.add(new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23"));
         this.scoreListItems.add(new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo"));

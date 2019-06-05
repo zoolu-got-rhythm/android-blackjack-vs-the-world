@@ -3,7 +3,7 @@ package com.example.slurp.blackjackandroid.utils;
 public class IntegerToWord {
     public static String convert(int n){
         if(n > 3 || n < 0)
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("parsed in int must be between 0-3");
         String word = "this word shouldn't display";
 
         switch (n){

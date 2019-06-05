@@ -19,7 +19,7 @@ public class MenuHintView extends LinearLayout {
     private TextView hintTextView;
     private SpeechScrollerView speechScrollerView;
 
-    public MenuHintView(Context context) {
+    public MenuHintView(Context context, String initialTitle) {
         super(context);
         this.setOrientation(HORIZONTAL);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -41,9 +41,9 @@ public class MenuHintView extends LinearLayout {
         this.speechScrollerView = new SpeechScrollerView(getContext());
         this.addView(this.speechScrollerView);
 
-        String title = "blackjack vs the world";
 
-        this.speechScrollerView.drawDialogueBox(title);
+
+        this.speechScrollerView.drawDialogueBox(initialTitle);
     }
 
     public SpeechScrollerView getSpeechScrollerView() {
