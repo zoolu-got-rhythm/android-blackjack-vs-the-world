@@ -19,21 +19,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="20dp"
-            android:background="@color/black">
+            android:background="@color/black"
+            android:padding="20dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/transparentPink"
-                >
+                android:background="@color/transparentPink">
 
 
                 <Button
@@ -42,8 +41,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginEnd="22dp"
-                    android:layout_marginTop="23dp"
+                    android:layout_marginEnd="14dp"
+                    android:layout_marginTop="11dp"
                     android:text="refresh" />
 
                 <Button
@@ -53,17 +52,23 @@
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:text="snap" />
+
+                <TextureView
+                    android:id="@+id/textureView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="5dp"/>
             </RelativeLayout>
 
         </LinearLayout>
 
 
-
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="submit to wall of fame"/>
+            android:text="submit to wall of fame" />
 
     </LinearLayout>
 

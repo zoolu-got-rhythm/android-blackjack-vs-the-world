@@ -34,7 +34,8 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-
+        // add a way too photo taking activity from menu, perhaps my holding down on -
+        // playButton, also add feature toggle for this in dev and set to false in master.
 
         final LinearLayout hintsLayoutParent = findViewById(R.id.title_container);
         final MenuHintView menuHintView = new MenuHintView(getApplicationContext(), MENU_TITLE);
@@ -73,11 +74,55 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        playButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent submitUserTimeActivityIntent = new Intent(getApplicationContext(),
+                        SubmitUserTimeActivity.class);
+                startActivity(submitUserTimeActivityIntent);
+
+                return false;
+            }
+        });
+
         // load score data from sql lite or sharedPrefs into list
         this.scoreListItems = new ArrayList<>();
-        this.scoreListItems.add(new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23"));
-        this.scoreListItems.add(new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo"));
-        this.scoreListItems.add(new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime"));
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo")
+        );
+
+        this.scoreListItems.add(
+                new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime")
+        );
+
 
         this.mScoresListRecyclerView = findViewById(R.id.score_recycler_view);
         this.mScoresListRecyclerView.setHasFixedSize(true);
