@@ -7,6 +7,7 @@ import com.example.slurp.blackjackandroid.R;
 
 import java.io.IOException;
 
+// this will become a potential shared resource, should add locks on it?
 public class SoundPlayerSingleton {
 
     private AssetFileDescriptor afd;
@@ -30,7 +31,9 @@ public class SoundPlayerSingleton {
         return soundPlayerSingletonInstance;
     }
 
-    public void play(AssetFileDescriptor afd){
+    // some thread contention (with threads calling this method at sametime) may have been causing this method to cause crash,
+    // due to this singleton class state being mutated by different threads simultaneously
+    public synchronized void play(AssetFileDescriptor afd){
 //        if(this.mediaPlayer.isPlaying())
 //            this.mediaPlayer.release();
         this.mediaPlayer.reset();
@@ -44,6 +47,5 @@ public class SoundPlayerSingleton {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

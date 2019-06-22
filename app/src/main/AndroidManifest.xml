@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".view.MenuActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -20,10 +20,10 @@
         </activity>
 
         <activity android:name=".view.MainActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".view.SubmitUserTimeActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
