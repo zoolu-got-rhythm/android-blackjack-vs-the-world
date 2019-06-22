@@ -131,7 +131,15 @@ public class MenuActivity extends AppCompatActivity {
 
         this.mScoresListRecyclerView.setLayoutManager(this.mLayoutManager);
         this.mScoresListRecyclerView.setAdapter(this.mScoreListAdapter);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        // not sure if i need to do this
+        this.mScoresListRecyclerView = null;
+        this.scoreListItems = null;
+        this.mScoreListAdapter = null;
     }
 }
