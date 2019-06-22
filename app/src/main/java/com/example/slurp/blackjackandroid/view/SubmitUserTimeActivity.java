@@ -3,6 +3,7 @@ package com.example.slurp.blackjackandroid.view;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -12,6 +13,7 @@ import android.media.Image;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -22,16 +24,74 @@ import android.widget.Toast;
 
 import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.services.CameraHelper;
+import com.example.slurp.blackjackandroid.services.InternalImageSaver;
 
 import java.io.File;
 
 public class SubmitUserTimeActivity extends AppCompatActivity {
 
+    private static String TAG = "submit user time Activity";
     private CameraHelper mCameraHelper;
     private TextureView mTextureView;
-    private Button mTakePhotoButton;
-
+    private Button mTakePhotoButton, mRefreshPreviewButton, mSubmitToWallOfFameButton;
+    private File mFile;
+    private boolean mCameraIsOpen = false;
+    private boolean mHasImageBeenSavedToInteralStorage = false;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_submit_user_time);
+
+        final LinearLayout hintsLayoutParent = findViewById(R.id.title_container);
+        final MenuHintView menuHintView = new MenuHintView(getApplicationContext(), "give us a smile");
+        hintsLayoutParent.addView(menuHintView);
+
+        this.mTextureView = findViewById(R.id.textureView);
+        this.mTextureView.setSurfaceTextureListener(this.mSurfaceTextureListener);
+
+        this.mTakePhotoButton = findViewById(R.id.takePictureButton);
+        this.mTakePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePhoto();
+            }
+        });
+
+        this.mRefreshPreviewButton = findViewById(R.id.refresh);
+        this.mRefreshPreviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCameraIsOpen)
+                    startCameraPreview();
+            }
+        });
+
+        this.mSubmitToWallOfFameButton = findViewById(R.id.submitToWallOfFame);
+        this.mSubmitToWallOfFameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mHasImageBeenSavedToInteralStorage){
+                    Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+
+        // could create a unique uuid for everyfile file as a name
+        this.mFile = new File(this.getFilesDir(), "fileNameTimeStamp?");
+        CameraManager cameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
+
+        this.mCameraHelper = CameraHelper.initInstance(cameraManager);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.mCameraHelper.close();
+    }
 
     private void requestCameraPermission(){
         ActivityCompat.requestPermissions(this,
@@ -43,13 +103,7 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
             new TextureView.SurfaceTextureListener() {
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-
-//                    openCamera(0, 0);
-                    // see if permission already obtained if not, request it
-                    //open camera
-                    //else{ request permission };
                     requestCameraPermission();
-
                 }
 
                 @Override
@@ -68,53 +122,21 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
                 }
             };
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_submit_user_time);
-
-
-        final LinearLayout hintsLayoutParent = findViewById(R.id.title_container);
-        final MenuHintView menuHintView = new MenuHintView(getApplicationContext(), "give us a smile");
-        hintsLayoutParent.addView(menuHintView);
-
-        this.mTextureView = findViewById(R.id.textureView);
-        this.mTextureView.setSurfaceTextureListener(this.mSurfaceTextureListener);
-
-        this.mTakePhotoButton = findViewById(R.id.takePictureButton);
-        this.mTakePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePhoto();
-            }
-        });
-
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-
-
-        File file = new File(this.getExternalFilesDir(null), "timestamp");
-        CameraManager cameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
-
-
-        this.mCameraHelper = CameraHelper.initInstance(cameraManager);
-
-    }
-
     public void takePhoto(){
         this.mCameraHelper.takePicture(new CameraHelper.ImageHandler() {
             @Override
             public Runnable onImageReady(Image image) {
-                return null;
+                Log.d(TAG, "image returned for processing");
+
+                // save jpeg image to internal storage
+                return new InternalImageSaver(getApplicationContext(), image, mFile,
+                        new InternalImageSaver.InternalImageSaverListener() {
+                            @Override
+                            public void onFinishedSaving(boolean wasSavedSuccessfully) {
+                                mHasImageBeenSavedToInteralStorage = wasSavedSuccessfully;
+                            }
+                        });
+//
                 //proccess image and store it
             }
         });
@@ -131,6 +153,7 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     this.openCamera(0, 0);
+                    mCameraIsOpen = true;
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -158,11 +181,15 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     private void openCamera(int width, int height){
         try {
             this.mCameraHelper.open();
-            SurfaceTexture surfaceTexture = this.mTextureView.getSurfaceTexture();
-            this.mCameraHelper.start(new Surface(surfaceTexture));
+            startCameraPreview();
         }catch (CameraAccessException e){
 
         }
+    }
+
+    private void startCameraPreview(){
+        SurfaceTexture surfaceTexture = this.mTextureView.getSurfaceTexture();
+        this.mCameraHelper.start(new Surface(surfaceTexture));
     }
 
     @Override

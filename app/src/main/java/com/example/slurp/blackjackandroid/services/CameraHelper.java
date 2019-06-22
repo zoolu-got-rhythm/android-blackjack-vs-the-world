@@ -53,10 +53,12 @@ public class CameraHelper {
     private Boolean mIsClosed = true;
     private static volatile CameraHelper instance;
 
-    private State mtakePicturePhaseState;
+    private State mtakePicturePhaseState = State.PREVIEW;
 
     private enum State {
-        WAITING_LOCK;
+        PREVIEW,
+        WAITING_LOCK,
+        TAKEN;
     }
 
     public interface ImageHandler{
@@ -110,6 +112,7 @@ public class CameraHelper {
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
                     // assign object to member ih class
                     // then call start preview
+                    mSemaphoreLock.release();
                     if(mIsClosed)
                      return;
                     mCameraCaptureSession = cameraCaptureSession;
@@ -126,8 +129,11 @@ public class CameraHelper {
             new CameraCaptureSession.CaptureCallback() {
                 private void process(CaptureResult result){
 
-                    Log.i("af state int", result.get(CaptureResult.CONTROL_AF_STATE).toString());
+//                    Log.i("af state int", result.get(CaptureResult.CONTROL_AF_STATE).toString());
 
+                    // extra feature like autoFocus and AutoExosure can be checked and ran from here.
+                    // beforeCaptureStillPicture is execute
+                    // you must first check if device supports autoFocus and autoExposure though
 
                     switch (mtakePicturePhaseState){
                         case WAITING_LOCK: {
@@ -178,11 +184,12 @@ public class CameraHelper {
     };
 
     private void captureStillPicture(){
-//        state = State.TAKEN
+        mtakePicturePhaseState = State.TAKEN;
         try {
             // This is the CaptureRequest.Builder that we use to take a picture.
             CaptureRequest.Builder builder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
 //            enableDefaultModes(builder)
+
             builder.addTarget(mImageReader.getSurface());
             builder.addTarget(mSurface);
             mCameraCaptureSession.stopRepeating();
@@ -209,7 +216,7 @@ public class CameraHelper {
             }
 
 ////                    if(isClosed) return
-////                    state = State.PREVIEW
+            mtakePicturePhaseState = State.PREVIEW;
 
             CaptureRequest.Builder builder = createPreviewRequestBuilder();
 
@@ -239,7 +246,7 @@ public class CameraHelper {
     public void open() throws CameraAccessException {
         try{
             try {
-                if(!mSemaphoreLock.tryAcquire(3l, TimeUnit.HOURS)){
+                if(!mSemaphoreLock.tryAcquire(3l, TimeUnit.SECONDS)){
                     throw new IllegalStateException("camera launch failed");
                 }
             } catch (InterruptedException e) {
@@ -266,6 +273,14 @@ public class CameraHelper {
      */
     public void start(Surface surface) {
         this.mSurface = surface;
+
+        try {
+            if(!mSemaphoreLock.tryAcquire(3l, TimeUnit.SECONDS)){
+                throw new IllegalStateException("attempting to create capture session on assigned cameraDevice reference");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // setup camera session
 
@@ -308,7 +323,9 @@ public class CameraHelper {
         this.mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
             @Override
             public void onImageAvailable(ImageReader imageReader) {
+
                 // return image to activity through callback
+
                 Image image = imageReader.acquireNextImage();
 
                 mBackgroundHandler.post(imageHandler.onImageReady(image));
@@ -373,6 +390,7 @@ public class CameraHelper {
 
 
     public void close(){
-
+        // release all camera related resources, this should be called from onDestroy?
+        // but definitely called from onPause();
     }
 }
