@@ -25,8 +25,11 @@ import android.widget.Toast;
 import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.services.CameraHelper;
 import com.example.slurp.blackjackandroid.services.InternalImageSaver;
+import com.example.slurp.blackjackandroid.services.SQLiteWallOfFameDbHelper;
+import com.example.slurp.blackjackandroid.services.WallOfFameDbCrudOperations;
 
 import java.io.File;
+import java.util.UUID;
 
 public class SubmitUserTimeActivity extends AppCompatActivity {
 
@@ -38,6 +41,7 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     private boolean mCameraIsOpen = false;
     private boolean mHasImageBeenSavedToInteralStorage = false;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
+    String uniqueImageNameId = UUID.randomUUID().toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,17 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(mHasImageBeenSavedToInteralStorage){
+
+                    // save user details and imagePathRef to local SQlite database
+                    SQLiteWallOfFameDbHelper dbHelper = new SQLiteWallOfFameDbHelper(getApplicationContext());
+
+                    WallOfFameDbCrudOperations.getInstance()
+                            .createRow(dbHelper, "bob", uniqueImageNameId);
+
+                    dbHelper.close();
+
+
+
                     Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                     startActivity(intent);
                     finish();
@@ -81,7 +96,8 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
         });
 
         // could create a unique uuid for everyfile file as a name
-        this.mFile = new File(this.getFilesDir(), "fileNameTimeStamp?");
+
+        this.mFile = new File(this.getFilesDir(), uniqueImageNameId + ".jpg");
         CameraManager cameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
 
         this.mCameraHelper = CameraHelper.initInstance(cameraManager);
@@ -127,6 +143,8 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
             @Override
             public Runnable onImageReady(Image image) {
                 Log.d(TAG, "image returned for processing");
+
+
 
                 // save jpeg image to internal storage
                 return new InternalImageSaver(getApplicationContext(), image, mFile,

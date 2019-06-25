@@ -37,7 +37,7 @@ public class AnimationManager {
         }
     }
 
-    
+
 
     // pause
     public void pause(){

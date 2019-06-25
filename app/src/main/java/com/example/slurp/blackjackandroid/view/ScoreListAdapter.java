@@ -52,7 +52,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
     @Override
     public void onBindViewHolder(@NonNull ScoreViewHolder viewHolder, int i) {
         ScoreListItem scoreListItem = this.listData.get(i);
-        viewHolder.mImageView.setImageResource(scoreListItem.getImageRes());
+        viewHolder.mImageView.setImageBitmap(scoreListItem.getImageBitmap());
 //        viewHolder.mUserRankTextView.setText(Integer.toString(scoreListItem.getUserRankNumber()));
 //        viewHolder.mUserNameTextView.setText(scoreListItem.getUserName());
         viewHolder.itemView.setHasTransientState(true); // is this needed?

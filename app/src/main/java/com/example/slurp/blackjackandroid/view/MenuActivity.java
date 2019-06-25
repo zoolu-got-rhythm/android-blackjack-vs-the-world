@@ -1,19 +1,32 @@
 package com.example.slurp.blackjackandroid.view;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.example.slurp.blackjackandroid.R;
+import com.example.slurp.blackjackandroid.services.SQLiteWallOfFameDbHelper;
+import com.example.slurp.blackjackandroid.services.WallOfFameDbContract;
+import com.example.slurp.blackjackandroid.services.WallOfFameDbCrudOperations;
 import com.example.slurp.blackjackandroid.utils.IntegerToWord;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,12 +40,17 @@ public class MenuActivity extends AppCompatActivity {
     private AnimationManager mPlayButtonAnimationManager;
     private boolean isCountingDownFlag = false;
     private final String MENU_TITLE = "blackjack vs the world";
+    private SQLiteWallOfFameDbHelper mDbHelper;
+    private final static String TAG = "menuActivity";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        Log.d(TAG, "IS CREATED");
+
 
         // add a way too photo taking activity from menu, perhaps my holding down on -
         // playButton, also add feature toggle for this in dev and set to false in master.
@@ -44,6 +62,14 @@ public class MenuActivity extends AppCompatActivity {
         final Button playButton = findViewById(R.id.playButton);
         this.mPlayButtonAnimationManager = new AnimationManager(this, playButton);
         this.mPlayButtonAnimationManager.start();
+
+//        for(int i = 0; i < getFilesDir().list().length; i++){
+//            String fileName = getFilesDir().list()[i];
+//            Boolean didDeleteFile = new File(getFilesDir(), fileName).delete();
+//            Log.d(TAG, "internal file was delete: " + Boolean.toString(didDeleteFile));
+//        }
+
+        this.mDbHelper =  new SQLiteWallOfFameDbHelper(this);
 
 
         playButton.setOnClickListener(new View.OnClickListener() {
@@ -80,49 +106,17 @@ public class MenuActivity extends AppCompatActivity {
                 Intent submitUserTimeActivityIntent = new Intent(getApplicationContext(),
                         SubmitUserTimeActivity.class);
                 startActivity(submitUserTimeActivityIntent);
+                finish();
 
                 return false;
             }
         });
 
-        // load score data from sql lite or sharedPrefs into list
         this.scoreListItems = new ArrayList<>();
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
-        );
 
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_two, 2, "chrisManDoo")
-        );
-
-        this.scoreListItems.add(
-                new ScoreListItem(R.drawable.me_placeholder_img, 22, "slime")
-        );
-
+//        this.scoreListItems.add(
+//                new ScoreListItem(R.drawable.me_placeholder_img, 5, "Bobby23")
+//        );
 
         this.mScoresListRecyclerView = findViewById(R.id.score_recycler_view);
         this.mScoresListRecyclerView.setHasFixedSize(true);
@@ -134,8 +128,104 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "IS RESUMED");
+
+        // load score data from sql lite or sharedPrefs into list
+
+        WallOfFameDbCrudOperations.getInstance().getAllRows(this.mDbHelper, new WallOfFameDbCrudOperations.QueryExecuctionListener() {
+            @Override
+            public void onGetRowsDone(Cursor cursor) {
+
+
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                while(cursor.moveToNext()) {
+                    long itemId = cursor.getLong(
+                            cursor.getColumnIndexOrThrow(WallOfFameDbContract.WallOfFameEntry._ID));
+
+
+                    String imageNameId = cursor.getString(
+                            cursor.getColumnIndexOrThrow(
+                                    WallOfFameDbContract.WallOfFameEntry.COLUMN_NAME_IMAGE_PATH)
+                    );
+
+//                    openFileInput(imageNameId)
+
+
+                    Log.d(TAG, getFilesDir().getAbsolutePath());
+
+//                    File fileContaintingImageBytes = new File(getFilesDir().getAbsolutePath(), imageNameId);
+//                    Bitmap userPictureBitmap = null;
+//                    try {
+//                        userPictureBitmap = BitmapFactory.decodeStream(new FileInputStream(
+//                                fileContaintingImageBytes
+//                        ));
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+
+                    String imageFilePath = getFilesDir() + "/" + imageNameId + ".jpg";
+
+//                    Bitmap userPictureBitmap = BitmapFactory.decodeFile(imageFilePath);
+
+//                    try {
+////                        FileInputStream fileInputStream = openFileInput(imageNameId);
+////                    } catch (FileNotFoundException e) {
+////                        e.printStackTrace();
+////                    }
+
+                    Bitmap userPictureBitmap = loadImageBitmap(imageFilePath);
+
+                    String userNickName = cursor.getString(
+                            cursor.getColumnIndexOrThrow(
+                                    WallOfFameDbContract.WallOfFameEntry.COLUMN_NAME_NICKNAME)
+                    );
+
+                    scoreListItems.add(new ScoreListItem(userPictureBitmap, (int) itemId, userNickName));
+                }
+                cursor.close();
+                mDbHelper.close();
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScoreListAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "IS PAUSED");
+
+    }
+
+    public Bitmap loadImageBitmap(String name){
+        Bitmap bitmap = null;
+        try{
+            Thread.sleep(500);
+            bitmap = BitmapFactory.decodeFile(name);
+            Log.d(TAG, "snould have loaded bitmap");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "IS DESTROYED");
 
         // not sure if i need to do this
         this.mScoresListRecyclerView = null;

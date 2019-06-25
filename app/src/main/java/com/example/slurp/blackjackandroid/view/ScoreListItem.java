@@ -1,17 +1,20 @@
 package com.example.slurp.blackjackandroid.view;
 
+import android.graphics.Bitmap;
+
 public class ScoreListItem {
-    private int imageRes, userRankNumber;
+    private int userRankNumber;
+    private Bitmap imageBitmap;
     private String userName;
 
-    public ScoreListItem(int imageRes, int userRankNumber, String userName) {
-        this.imageRes = imageRes;
+    public ScoreListItem(Bitmap imageBitmap, int userRankNumber, String userName) {
+        this.imageBitmap = imageBitmap;
         this.userRankNumber = userRankNumber;
         this.userName = userName;
     }
 
-    public int getImageRes() {
-        return imageRes;
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
     }
 
     public int getUserRankNumber() {
