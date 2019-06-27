@@ -21,6 +21,7 @@ import com.example.slurp.blackjackandroid.services.SQLiteWallOfFameDbHelper;
 import com.example.slurp.blackjackandroid.services.WallOfFameDbContract;
 import com.example.slurp.blackjackandroid.services.WallOfFameDbCrudOperations;
 import com.example.slurp.blackjackandroid.utils.IntegerToWord;
+import com.example.slurp.blackjackandroid.view.customFetchingScoresView.ScanningForDevicesCompoundView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,6 +59,28 @@ public class MenuActivity extends AppCompatActivity {
         final LinearLayout hintsLayoutParent = findViewById(R.id.title_container);
         final MenuHintView menuHintView = new MenuHintView(getApplicationContext(), MENU_TITLE);
         hintsLayoutParent.addView(menuHintView);
+
+        final ScanningForDevicesCompoundView scanningForDevicesCompoundView =
+                new ScanningForDevicesCompoundView(this);
+
+        LinearLayout wallOfFameFetchContainer = findViewById(R.id.wallOfFameFetchContainer);
+        wallOfFameFetchContainer.addView(scanningForDevicesCompoundView);
+
+//        while(scanningForDevicesCompoundView.isAttachedToWindow()){
+//
+//        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                scanningForDevicesCompoundView.startScan();
+
+            }
+        }).start();
 
         final Button playButton = findViewById(R.id.playButton);
         this.mPlayButtonAnimationManager = new AnimationManager(this, playButton);
