@@ -41,7 +41,6 @@ public class RippleWhenTouchesCanvas extends View {
         super.onDraw(canvas);
     }
 
-
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -64,7 +63,7 @@ public class RippleWhenTouchesCanvas extends View {
                     try {
                         checkAndClearBuffer();
                         postInvalidate();
-                        Thread.sleep(25); // 40fp
+                        Thread.sleep(1000 / 60); // 60 fps
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

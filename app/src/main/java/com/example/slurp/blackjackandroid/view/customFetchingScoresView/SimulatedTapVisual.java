@@ -10,7 +10,8 @@ public class SimulatedTapVisual {
     private Boolean isAnimating;
     private int velocity;
     private Boolean hasFinishedAnimating;
-    private static final int FRAMERATE = 1000 / 50; // 10FPS
+    public static final int FPS = 50;
+    private static final int FRAMERATE = 1000 / FPS;
 
     public SimulatedTapVisual(Point point){
         this.point = point;
@@ -76,6 +77,10 @@ public class SimulatedTapVisual {
 
     public void setMaxRadius(int maxRadius) {
         this.maxRadius = maxRadius;
+    }
+
+    public int getMaxRadius() {
+        return this.maxRadius;
     }
 
     public void setVelocity(int velocity) {

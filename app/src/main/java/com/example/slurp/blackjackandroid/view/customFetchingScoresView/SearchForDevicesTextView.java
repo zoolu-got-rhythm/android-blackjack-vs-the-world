@@ -14,15 +14,17 @@ import java.util.TimerTask;
 
 public class SearchForDevicesTextView extends AppCompatTextView {
     final Handler handler = new Handler();
-    private String textToDisplay;
+    private String textToDisplay, textToDisplayWhenScanStopped;
     private String textScrollCurrentState;
     private int i;
     private Timer myTimer;
 
-    public SearchForDevicesTextView(Context context, String textToDisplay, int widthOffSet) {
+    public SearchForDevicesTextView(Context context, String textToDisplay, String textToDisplayWhenScanStopped,
+                                    int widthOffSet) {
         super(context);
         this.i = 1;
         this.textToDisplay = textToDisplay;
+        this.textToDisplayWhenScanStopped = textToDisplayWhenScanStopped;
         this.setTextColor(Color.GREEN);
         this.setBackgroundColor(Color.DKGRAY);
         this.setTextSize(20f);
@@ -46,6 +48,7 @@ public class SearchForDevicesTextView extends AppCompatTextView {
     }
 
     public void startScan(){
+        this.i = 1;
         this.textScrollCurrentState = this.textToDisplay.substring(0, this.i);
         this.setText(this.textScrollCurrentState);
         if(this.myTimer != null)
@@ -56,7 +59,7 @@ public class SearchForDevicesTextView extends AppCompatTextView {
             public void run() {
                 UpdateGUI();
             }
-        }, 0, 1000 / 8);
+        }, 0, 1000 / 20); // 20fps
     }
 
     public void stopScan(){
@@ -64,7 +67,7 @@ public class SearchForDevicesTextView extends AppCompatTextView {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                setText("not connected to NEARBY API...");
+                setText(textToDisplayWhenScanStopped);
                 invalidate();
             }
         });
@@ -77,8 +80,10 @@ public class SearchForDevicesTextView extends AppCompatTextView {
     }
 
     private void UpdateGUI() {
-        if (this.i >= this.textToDisplay.length())
-            this.i = 1;
+        if (this.i > this.textToDisplay.length()){
+            this.myTimer.cancel();
+            return;
+        }
         this.textScrollCurrentState = this.textToDisplay.substring(0, this.i);
         handler.post(myRunnable);
 //        runO

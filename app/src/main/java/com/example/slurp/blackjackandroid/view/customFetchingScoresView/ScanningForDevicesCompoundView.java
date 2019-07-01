@@ -19,10 +19,25 @@ public class ScanningForDevicesCompoundView extends LinearLayout {
     private int squareHeightInDp;
     private Context mContext;
 
-    public ScanningForDevicesCompoundView(Context context) {
+    private final int SCAN_BEAM_FULL_CYCLE_TIME_IN_MS = (1000 / SimulatedTapVisual.FPS) * ScanningBeam.MAX_RADIUS;
+
+    private final int SCANNING_BEAMS_TO_SPAWN_PER_CYCLE_IN_MS =
+            Math.round(SCAN_BEAM_FULL_CYCLE_TIME_IN_MS / 1.2f); // spawn 1.2 beams per scanning beam cycle
+
+
+    private ScanningForDevicesCompoundViewListener mScanningForDevicesCompoundViewListener;
+
+    public interface ScanningForDevicesCompoundViewListener{
+        void onMountedToViewTree();
+    }
+
+    public ScanningForDevicesCompoundView(Context context,
+                                          ScanningForDevicesCompoundViewListener
+                                                  scanningForDevicesCompoundViewListener) {
 
         super(context);
         this.mContext = context;
+        this.mScanningForDevicesCompoundViewListener = scanningForDevicesCompoundViewListener;
 
         final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
 
@@ -35,7 +50,6 @@ public class ScanningForDevicesCompoundView extends LinearLayout {
         ViewTreeObserver viewTreeObserver = this.getViewTreeObserver();
 
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
             @Override
             public void onGlobalLayout() {
                 //remove listener to ensure only one call is made.
@@ -45,17 +59,17 @@ public class ScanningForDevicesCompoundView extends LinearLayout {
 
                 searchForDevicesView =
                         new SearchForDevicesTextView(mContext,
-                                "fetching scores...",squareHeightInDp);
+                                "fetching online scores...", "scores",
+                                squareHeightInDp);
                 addView(searchForDevicesView);
 
                 rippleWhenTouchesCanvas = new RippleWhenTouchesCanvas(mContext, squareHeightInDp, squareHeightInDp);
 //        rippleWhenTouchesCanvas.setBackgroundColor(Color.GREEN);
                 addView(rippleWhenTouchesCanvas);
 
+                mScanningForDevicesCompoundViewListener.onMountedToViewTree();
             }
-
         });
-
     }
 
     @Override
@@ -75,14 +89,14 @@ public class ScanningForDevicesCompoundView extends LinearLayout {
                 rippleWhenTouchesCanvas.addTap(new ScanningBeam(
                         new Point(squareHeightInDp / 2, squareHeightInDp / 2)));
             }
-        }, 0, 800);
-//        this.rippleWhenTouchesCanvas.
+        }, 0, SCANNING_BEAMS_TO_SPAWN_PER_CYCLE_IN_MS);
     }
 
     public void stopScan(){
         this.searchForDevicesView.stopScan();
 
-        this.timer.cancel();
+        if(this.timer != null)
+            this.timer.cancel();
         this.timer = null;
     }
 

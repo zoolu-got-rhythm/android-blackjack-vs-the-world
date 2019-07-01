@@ -43,7 +43,35 @@ public class MenuActivity extends AppCompatActivity {
     private final String MENU_TITLE = "blackjack vs the world";
     private SQLiteWallOfFameDbHelper mDbHelper;
     private final static String TAG = "menuActivity";
+    private ScanningForDevicesCompoundView scanningForDevicesCompoundView;
+    private final static int FETCH_DATA_INTERVAL_IN_MS = 1000 * 10;
+    private final static int FETCH_INDICATOR_DURATION_IN_MS = 4000;
 
+    private class FetchScoresFromApiThread extends Thread{
+        private Boolean running = true;
+
+        @Override
+        public void run() {
+            while(running){
+                try {
+                    scanningForDevicesCompoundView.startScan();
+                    // fetch score data
+                    Thread.sleep(FETCH_INDICATOR_DURATION_IN_MS);
+                    scanningForDevicesCompoundView.stopScan();
+                    Thread.sleep(FETCH_DATA_INTERVAL_IN_MS -
+                            FETCH_INDICATOR_DURATION_IN_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void stopThread(){
+            this.running = false;
+        }
+    }
+
+    private FetchScoresFromApiThread fetchScoresFromApiThread = new FetchScoresFromApiThread();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,27 +88,16 @@ public class MenuActivity extends AppCompatActivity {
         final MenuHintView menuHintView = new MenuHintView(getApplicationContext(), MENU_TITLE);
         hintsLayoutParent.addView(menuHintView);
 
-        final ScanningForDevicesCompoundView scanningForDevicesCompoundView =
-                new ScanningForDevicesCompoundView(this);
+        this.scanningForDevicesCompoundView =
+                new ScanningForDevicesCompoundView(this, new ScanningForDevicesCompoundView.ScanningForDevicesCompoundViewListener() {
+                    @Override
+                    public void onMountedToViewTree() {
+                        fetchScoresFromApiThread.start();
+                    }
+                });
 
         LinearLayout wallOfFameFetchContainer = findViewById(R.id.wallOfFameFetchContainer);
-        wallOfFameFetchContainer.addView(scanningForDevicesCompoundView);
-
-//        while(scanningForDevicesCompoundView.isAttachedToWindow()){
-//
-//        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                scanningForDevicesCompoundView.startScan();
-
-            }
-        }).start();
+        wallOfFameFetchContainer.addView(this.scanningForDevicesCompoundView);
 
         final Button playButton = findViewById(R.id.playButton);
         this.mPlayButtonAnimationManager = new AnimationManager(this, playButton);
@@ -250,6 +267,8 @@ public class MenuActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "IS DESTROYED");
 
+        this.scanningForDevicesCompoundView.stopScan();
+        fetchScoresFromApiThread.stopThread();
         // not sure if i need to do this
         this.mScoresListRecyclerView = null;
         this.scoreListItems = null;
