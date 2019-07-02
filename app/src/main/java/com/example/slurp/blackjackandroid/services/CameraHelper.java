@@ -376,6 +376,9 @@ public class CameraHelper {
     }
 
     private void stopBackgroundHandler() {
+        if(mBackgroundHandlerThread == null)
+            return;
+
         mBackgroundHandlerThread.quitSafely();
         try {
             // TODO: investigate why thread does not end when join is called

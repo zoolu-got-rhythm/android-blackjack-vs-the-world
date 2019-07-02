@@ -171,7 +171,8 @@ public class SpeechScrollerView extends View{
 //        float speechBoxHeightDp = widthAndHeightOfText.get("height");
 
         int speechTriangleWidthDp = (Math.round(
-                responsiveSizes.getSpeechBubbleTriangleWidth() * DEVICE_DENSITY_SCALE));
+                responsiveSizes.getSpeechBubbleTriangleWidth() * DEVICE_DENSITY_SCALE)
+        );
 
 
         this.currentPlot = new SpeechBubblePlotManager().plotSpeechBubble(
@@ -194,15 +195,29 @@ public class SpeechScrollerView extends View{
                     wigglePlot = new SpeechBubblePlotManager().copyPlotArrAndWiggleByRange(currentPlot, 4);
                     randomTextWiggleOffset = new SpeechBubblePlotManager().generateRandomNegOrPosNumberInRangeX(4);
 
-                    mHandler.postAtFrontOfQueue(new Runnable() {
-                        @Override
-                        public void run() {
-                            postInvalidate();
+                    if(wigglePlot != null) // makes sure wiggleplot has been assigned before trying to call methods on it when drawing
+                        mHandler.postAtFrontOfQueue(new Runnable() {
+                            @Override
+                            public void run() {
+                                postInvalidate();
 
-                        }
-                    });
+                            }
+                        });
                 }
             }, 0, 150);
         }
+    }
+
+    public void stopDrawDialogueBox(){
+        if(this.wiggleTimer != null){
+            this.wiggleTimer.cancel();
+            this.wiggleTimer = null;
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
     }
 }

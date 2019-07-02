@@ -3,6 +3,7 @@ package com.example.slurp.blackjackandroid.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +20,24 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
     private List<ScoreListItem> listData;
     private Context context;
 
-    public static class ScoreViewHolder extends RecyclerView.ViewHolder{
+    public class ScoreViewHolder extends RecyclerView.ViewHolder{
         public ImageView mImageView;
         public TextView mUserNameTextView, mUserRankTextView;
+        public ViewGroup userNameContainerView;
+        public SpeechScrollerView mSpeechScrollerView;
 
         public ScoreViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.user_picture);
 //            mUserNameTextView = itemView.findViewById(R.id.username);
-//            mUserRankTextView = itemView.findViewById(R.id.rank_number);
+//            mUserRankTextView = itemView.findViewById(R.id.rank_number)
 
+            // viewGroup is super class/base class of linearLayout I believe
+            this.userNameContainerView = itemView.findViewById(R.id.username_container);
+
+
+            this.mSpeechScrollerView = new SpeechScrollerView(context);
+            this.userNameContainerView.addView(this.mSpeechScrollerView);
         }
     }
 
@@ -46,6 +55,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
 
 
         ScoreViewHolder scoreViewHolder = new ScoreViewHolder(v);
+
         return scoreViewHolder;
     }
 
@@ -55,16 +65,40 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
         viewHolder.mImageView.setImageBitmap(scoreListItem.getImageBitmap());
 //        viewHolder.mUserRankTextView.setText(Integer.toString(scoreListItem.getUserRankNumber()));
 //        viewHolder.mUserNameTextView.setText(scoreListItem.getUserName());
-        viewHolder.itemView.setHasTransientState(true); // is this needed?
-        ViewGroup v = (ViewGroup) viewHolder.itemView;
+//        viewHolder.itemView.setHasTransientState(true); // is this needed?
+//        ViewGroup v = (ViewGroup) viewHolder.itemView;
+        viewHolder.mSpeechScrollerView.drawDialogueBox(this.listData.get(i).getUserName());
 
-        SpeechScrollerView speechScrollerView = new SpeechScrollerView(this.context);
 
-        ViewGroup userNameContainerView = v.findViewById(R.id.username_container);
-        userNameContainerView.addView(speechScrollerView);
-        speechScrollerView.drawDialogueBox(scoreListItem.getUserName());
-        viewHolder.itemView.setHasTransientState(false); // is this needed?
+//        ViewGroup userNameContainerView = v.findViewById(R.id.username_container);
+
+
+
+
+        Log.d("scoreListAdapter", "onBindViewHolder: " + i);
+
+//        viewHolder.itemView.setHasTransientState(false); // is this needed?
     }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ScoreViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ScoreViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.mSpeechScrollerView.stopDrawDialogueBox();
+        Log.d("scoreListAdapter", "container view children size: " +
+            holder.userNameContainerView.getChildCount());
+//        if(holder.userNameContainerView.getChildCount() > 0)
+//            holder.userNameContainerView.removeViewAt(0);
+//        if(holder.userNameContainerView.getChildCount() > 0)
+//            holder.userNameContainerView.removeAllViews();
+    }
+
+
 
     @Override
     public int getItemCount() {
