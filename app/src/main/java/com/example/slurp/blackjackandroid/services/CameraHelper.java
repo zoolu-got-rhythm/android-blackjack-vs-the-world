@@ -1,6 +1,7 @@
 package com.example.slurp.blackjackandroid.services;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Camera;
 import android.graphics.ImageFormat;
@@ -24,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
 import android.view.Surface;
 
 import java.util.Arrays;
@@ -49,6 +51,9 @@ public class CameraHelper {
     private String mCameraId;
     private CameraManager mCameraManager;
     private CameraCaptureSession mCameraCaptureSession;
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray(4);
+    private Context mContext;
+    private int mDeviceRotation;
 
     private Boolean mIsClosed = true;
     private static volatile CameraHelper instance;
@@ -65,7 +70,7 @@ public class CameraHelper {
         public Runnable onImageReady(Image image);
     }
 
-    private CameraHelper(CameraManager cameraManager) {
+    private CameraHelper(CameraManager cameraManager, int deviceRotation) {
         this.mCameraManager = cameraManager;
         this.mCameraId = this.setUpCameraId(cameraManager);
         try {
@@ -73,15 +78,28 @@ public class CameraHelper {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        this.mDeviceRotation = deviceRotation;
+
+        this.ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        this.ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        this.ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        this.ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
-    public synchronized static CameraHelper initInstance(CameraManager cameraManager) {
+    // singleton pattern
+    public synchronized static CameraHelper initInstance(CameraManager cameraManager, int deviceRotation) {
         if (instance != null)
             return instance;
-        instance = new CameraHelper(cameraManager);
+        instance = new CameraHelper(cameraManager, deviceRotation);
         return instance;
     }
 
+    private int getJpegOrientation(){
+        int sensorOrientation = this.mCameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+//        this.mContext.getAc
+        int surfaceRotation = this.ORIENTATIONS.get(this.mDeviceRotation);
+        return (surfaceRotation + sensorOrientation + 270) % 360;
+    };
 
     private @Nullable String setUpCameraId(CameraManager cameraManager){
 
@@ -189,6 +207,10 @@ public class CameraHelper {
             // This is the CaptureRequest.Builder that we use to take a picture.
             CaptureRequest.Builder builder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
 //            enableDefaultModes(builder)
+
+            builder.set(
+                    CaptureRequest.JPEG_ORIENTATION,
+                    this.getJpegOrientation());
 
             builder.addTarget(mImageReader.getSurface());
             builder.addTarget(mSurface);
@@ -334,6 +356,10 @@ public class CameraHelper {
         this.lockFocus();
     }
 
+    private void setImageOutputOrientation(){
+
+    }
+
     private void lockFocus(){
 
         this.mtakePicturePhaseState = State.WAITING_LOCK;
@@ -395,5 +421,6 @@ public class CameraHelper {
     public void close(){
         // release all camera related resources, this should be called from onDestroy?
         // but definitely called from onPause();
+        this.stopBackgroundHandler();
     }
 }

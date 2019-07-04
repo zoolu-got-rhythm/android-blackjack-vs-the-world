@@ -86,8 +86,6 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
 
                     dbHelper.close();
 
-
-
                     Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                     startActivity(intent);
                     finish();
@@ -100,7 +98,9 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
         this.mFile = new File(this.getFilesDir(), uniqueImageNameId + ".jpg");
         CameraManager cameraManager = (CameraManager) this.getSystemService(Context.CAMERA_SERVICE);
 
-        this.mCameraHelper = CameraHelper.initInstance(cameraManager);
+        int deviceRotation = this.getWindowManager().getDefaultDisplay().getRotation();
+
+        this.mCameraHelper = CameraHelper.initInstance(cameraManager, deviceRotation);
     }
 
     @Override
@@ -180,7 +180,6 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
                 }
                 return;
             }
-
             // other 'case' lines to check for other
             // permissions this app might request.
         }
@@ -189,11 +188,8 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        try {
-//            this.mCameraHelper.open();
-//        } catch (CameraAccessException e) {
-//            e.printStackTrace();
-//        }
+//        this.openCamera(0, 0);
+//        this.requestCameraPermission();
     }
 
     private void openCamera(int width, int height){
