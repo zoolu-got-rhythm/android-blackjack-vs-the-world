@@ -277,15 +277,20 @@ public class CameraHelper {
 
             // if cameraDevice already opened no need to re-open
             if(mCameraDevice != null){
+                startBackgroundHandler();
                 mSemaphoreLock.release();
                 return;
             }
 
             startBackgroundHandler();
+
+            // this method call openCamera on manager api creates and assigns cameraDevice ref for first time
             this.mCameraManager.openCamera(this.mCameraId, this.mCameraDeviceStateCallback, this.mBackgroundHandler);
         }catch (SecurityException e){
             Log.d(TAG, "open camera failed");
         }
+
+        Log.d(TAG, "camera should be opened");
 
         // cameraManager : openCamera();
     }
@@ -392,8 +397,12 @@ public class CameraHelper {
 
     private void startBackgroundHandler(){
 
+        Log.d(TAG, "beginning of startBackgroundThread method");
+
         if(mBackgroundHandlerThread != null)
             return;
+
+        Log.d(TAG, "starting new background handler on thread");
 
         mBackgroundHandlerThread = new HandlerThread("camera" + mCameraId + "-tasks");
         mBackgroundHandlerThread.start();
@@ -402,6 +411,8 @@ public class CameraHelper {
     }
 
     private void stopBackgroundHandler() {
+        Log.d(TAG, "attempting to stop background thread");
+
         if(mBackgroundHandlerThread == null)
             return;
 
@@ -409,8 +420,13 @@ public class CameraHelper {
         try {
             // TODO: investigate why thread does not end when join is called
             mBackgroundHandlerThread.join();
+
+            Log.d(TAG, "attempting to join background thread to main via .join()");
             mBackgroundHandlerThread = null;
             mBackgroundHandler = null;
+
+            Log.d(TAG, "have both background thread and handler been assigned null: " +
+                Boolean.toString(mBackgroundHandlerThread == null && mBackgroundHandler == null));
         } catch (InterruptedException e) {
             Log.e(TAG, "===== stop background error" + e);
         }
@@ -421,6 +437,31 @@ public class CameraHelper {
     public void close(){
         // release all camera related resources, this should be called from onDestroy?
         // but definitely called from onPause();
+
+        try{
+            if(this.mSemaphoreLock.tryAcquire(3, TimeUnit.SECONDS)){
+                // isClosed = true;
+            }
+
+            this.mCameraCaptureSession.close();
+            this.mCameraCaptureSession = null;
+
+            this.mCameraDevice.close();
+            this.mCameraDevice = null;
+
+            this.mSurface.release();
+            this.mSurface = null;
+
+            this.mImageReader.close();
+            this.mImageReader = null;
+            this.stopBackgroundHandler();
+        }catch (InterruptedException e){
+            Log.e(TAG, "error closing camera" + e);
+        }finally {
+            this.mSemaphoreLock.release();
+        }
+
+
         this.stopBackgroundHandler();
     }
 }

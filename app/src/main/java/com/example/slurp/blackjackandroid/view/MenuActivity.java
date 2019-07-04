@@ -46,6 +46,7 @@ public class MenuActivity extends AppCompatActivity {
     private ScanningForDevicesCompoundView scanningForDevicesCompoundView;
     private final static int FETCH_DATA_INTERVAL_IN_MS = 1000 * 10;
     private final static int FETCH_INDICATOR_DURATION_IN_MS = 4000;
+    private int mPrevCursorCount = 0;
 
     private class FetchScoresFromApiThread extends Thread{
         private Boolean running = true;
@@ -174,6 +175,15 @@ public class MenuActivity extends AppCompatActivity {
 
         // load score data from sql lite or sharedPrefs into list
 
+        // this is rough code for checking whether need to re-query database for new user scores
+//        if(cursor.getCount() == mPrevCursorCount){
+//            cursor.close();
+//            mDbHelper.close();
+//            return;
+//        }
+//
+//        mPrevCursorCount = cursor.getCount();
+
         WallOfFameDbCrudOperations.getInstance().getAllRows(this.mDbHelper, new WallOfFameDbCrudOperations.QueryExecuctionListener() {
             @Override
             public void onGetRowsDone(Cursor cursor) {
@@ -184,6 +194,12 @@ public class MenuActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                // if there's no new data to update since last check, just skip looping through each database row,
+                // seems like it can be expensive to pull data out of rows via cursor
+
+
+
 
                 while(cursor.moveToNext()) {
                     long itemId = cursor.getLong(

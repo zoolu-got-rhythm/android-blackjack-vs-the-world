@@ -57,6 +57,25 @@ public class WallOfFameDbCrudOperations {
         }).start();
     }
 
+    // haven't tested this method yet
+    public int getRowsCount(final SQLiteWallOfFameDbHelper dbHelper){
+        try {
+            this.mSemaphoreLock.tryAcquire(2l, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor= db.rawQuery(
+                "SELECT COUNT (*) FROM " + WallOfFameDbContract.WallOfFameEntry.TABLE_NAME, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        this.mSemaphoreLock.release();
+        return count;
+    }
+
     public void getAllRows(final SQLiteWallOfFameDbHelper dbHelper, final QueryExecuctionListener queryExecuctionListener) {
 
         try {

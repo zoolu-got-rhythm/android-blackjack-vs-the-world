@@ -103,12 +103,6 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
         this.mCameraHelper = CameraHelper.initInstance(cameraManager, deviceRotation);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        this.mCameraHelper.close();
-    }
-
     private void requestCameraPermission(){
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA},
@@ -144,8 +138,6 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
             public Runnable onImageReady(Image image) {
                 Log.d(TAG, "image returned for processing");
 
-
-
                 // save jpeg image to internal storage
                 return new InternalImageSaver(getApplicationContext(), image, mFile,
                         new InternalImageSaver.InternalImageSaverListener() {
@@ -170,6 +162,7 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    Log.d(TAG, "permission granted attempting to open camera");
                     this.openCamera(0, 0);
                     mCameraIsOpen = true;
                 } else {
@@ -188,11 +181,15 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // need to find a way to open camera which doesn't conflict with onCreate surface ready -
+        // callback
 //        this.openCamera(0, 0);
 //        this.requestCameraPermission();
     }
 
     private void openCamera(int width, int height){
+        Log.d(TAG, "opening camera");
+
         try {
             this.mCameraHelper.open();
             startCameraPreview();
@@ -209,6 +206,12 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        this.mCameraHelper.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         this.mCameraHelper.close();
     }
 }

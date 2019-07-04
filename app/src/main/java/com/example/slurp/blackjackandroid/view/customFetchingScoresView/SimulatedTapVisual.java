@@ -54,7 +54,7 @@ public class SimulatedTapVisual {
 
     public void update(int delta){
         float dt = delta / FRAMERATE; // deltaTime = delta / fps
-        Log.d("delta", Float.toString(dt));
+//        Log.d("delta", Float.toString(dt));
         this.currentRadius += (dt * this.velocity);
     }
 
