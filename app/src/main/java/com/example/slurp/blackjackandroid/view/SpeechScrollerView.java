@@ -147,12 +147,9 @@ public class SpeechScrollerView extends View{
         return mapOfTextWidthAndHeight;
     }
 
-    public void drawDialogueBox(String textToDisplay){
+    public void drawDialogueBox(String textToDisplay, boolean drawRepeatedly){
 
         this.textToDisplay = textToDisplay;
-
-
-
 
         AssetManager am = getContext().getAssets();
         Typeface customFont = Typeface.createFromAsset(am,  "fonts/Dokdo-Regular.ttf");
@@ -186,27 +183,45 @@ public class SpeechScrollerView extends View{
         );
 
         if(this.wiggleTimer == null){
-            this.wiggleTimer = new Timer();
-            this.wiggleTimer.scheduleAtFixedRate(new TimerTask() {
 
-                @Override
-                public void run() {
+            if(drawRepeatedly){
+                this.wiggleTimer = new Timer();
+                this.wiggleTimer.scheduleAtFixedRate(new TimerTask() {
 
-                    wigglePlot = new SpeechBubblePlotManager().copyPlotArrAndWiggleByRange(currentPlot, 4);
-                    randomTextWiggleOffset = new SpeechBubblePlotManager().generateRandomNegOrPosNumberInRangeX(4);
+                    @Override
+                    public void run() {
 
-                    if(wigglePlot != null) // makes sure wiggleplot has been assigned before trying to call methods on it when drawing
-                        mHandler.postAtFrontOfQueue(new Runnable() {
-                            @Override
-                            public void run() {
-                                postInvalidate();
+                        copyPrevPlotsAndDeviateThemByRange(4);
 
-                            }
-                        });
-                }
-            }, 0, 150);
+                        // not sure if this wiggleplot != null check is needed
+                        if(wigglePlot != null) // makes sure wiggleplot has been assigned before trying to call methods on it when drawing
+                            mHandler.postAtFrontOfQueue(new Runnable() {
+                                @Override
+                                public void run() {
+                                    postInvalidate();
+
+                                }
+                            });
+                    }
+                }, 0, 150);
+            }else{
+                copyPrevPlotsAndDeviateThemByRange(4);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        postInvalidate();
+                    }
+                });
+            }
         }
     }
+
+    private void copyPrevPlotsAndDeviateThemByRange(int range){
+        wigglePlot = new SpeechBubblePlotManager().copyPlotArrAndWiggleByRange(currentPlot, range);
+        randomTextWiggleOffset = new SpeechBubblePlotManager().generateRandomNegOrPosNumberInRangeX(range);
+    }
+
+
 
     public void stopDrawDialogueBox(){
         if(this.wiggleTimer != null){

@@ -132,7 +132,7 @@ public class MenuActivity extends AppCompatActivity {
                                 finish();
                             }else{
                                 menuHintView.getSpeechScrollerView().drawDialogueBox(
-                                        IntegerToWord.convert(countDown).toUpperCase());
+                                        IntegerToWord.convert(countDown).toUpperCase(), true);
                                 countDown--;
                             }
                         }

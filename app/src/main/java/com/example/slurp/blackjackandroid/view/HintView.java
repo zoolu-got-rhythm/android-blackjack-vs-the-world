@@ -84,7 +84,7 @@ public class HintView extends LinearLayout implements Observer{
             }
         }
 
-        this.speechScrollerView.drawDialogueBox(hint);
+        this.speechScrollerView.drawDialogueBox(hint, true);
 
     }
 }

@@ -67,7 +67,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
 //        viewHolder.mUserNameTextView.setText(scoreListItem.getUserName());
 //        viewHolder.itemView.setHasTransientState(true); // is this needed?
 //        ViewGroup v = (ViewGroup) viewHolder.itemView;
-        viewHolder.mSpeechScrollerView.drawDialogueBox(this.listData.get(i).getUserName());
+        viewHolder.mSpeechScrollerView.drawDialogueBox(this.listData.get(i).getUserName(), false);
 
 
 //        ViewGroup userNameContainerView = v.findViewById(R.id.username_container);
@@ -89,7 +89,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
     @Override
     public void onViewDetachedFromWindow(@NonNull ScoreViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        holder.mSpeechScrollerView.stopDrawDialogueBox();
+//        holder.mSpeechScrollerView.stopDrawDialogueBox();
         Log.d("scoreListAdapter", "container view children size: " +
             holder.userNameContainerView.getChildCount());
 //        if(holder.userNameContainerView.getChildCount() > 0)

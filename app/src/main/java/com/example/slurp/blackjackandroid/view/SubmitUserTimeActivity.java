@@ -11,6 +11,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.media.Image;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,8 +41,9 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     private File mFile;
     private boolean mCameraIsOpen = false;
     private boolean mHasImageBeenSavedToInteralStorage = false;
-    private final static int MY_PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
+    private final static int MY_PERMISSIONS_REQUEST_ACCESS_CAMERA = 1; // int number for camera permissions
     String uniqueImageNameId = UUID.randomUUID().toString();
+    private boolean mTextureViewSurfaceHasLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +115,8 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
             new TextureView.SurfaceTextureListener() {
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-                    requestCameraPermission();
+                    mTextureViewSurfaceHasLoaded = true;
+//                    requestCameraPermission();
                 }
 
                 @Override
@@ -183,8 +186,8 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
         super.onResume();
         // need to find a way to open camera which doesn't conflict with onCreate surface ready -
         // callback
-//        this.openCamera(0, 0);
-//        this.requestCameraPermission();
+        if(!this.mCameraIsOpen)
+            this.requestCameraPermission();
     }
 
     private void openCamera(int width, int height){
@@ -206,12 +209,20 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        this.mCameraHelper.close();
+
+        if(this.mCameraIsOpen){
+            this.mCameraHelper.close();
+            this.mCameraIsOpen = false;
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.mCameraHelper.close();
+
+        // strangely onPause is being called before activity is destroyed:
+        // which is causing mCameraHelper.close to be called twice successively -
+        // breaking the app
+//        this.mCameraHelper.close();
     }
 }

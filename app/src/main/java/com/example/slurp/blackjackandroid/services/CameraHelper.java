@@ -438,9 +438,12 @@ public class CameraHelper {
         // release all camera related resources, this should be called from onDestroy?
         // but definitely called from onPause();
 
+
         try{
             if(this.mSemaphoreLock.tryAcquire(3, TimeUnit.SECONDS)){
                 // isClosed = true;
+                Log.d(TAG, "closing camera services and making object refs null");
+
             }
 
             this.mCameraCaptureSession.close();
@@ -454,14 +457,12 @@ public class CameraHelper {
 
             this.mImageReader.close();
             this.mImageReader = null;
+
             this.stopBackgroundHandler();
         }catch (InterruptedException e){
             Log.e(TAG, "error closing camera" + e);
         }finally {
             this.mSemaphoreLock.release();
         }
-
-
-        this.stopBackgroundHandler();
     }
 }
