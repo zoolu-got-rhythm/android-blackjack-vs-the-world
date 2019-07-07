@@ -3,11 +3,14 @@ package com.example.slurp.blackjackandroid.view;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ import com.example.slurp.blackjackandroid.model.blackjack.Game;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
 import com.example.slurp.blackjackandroid.model.playingcards.PlayingCard;
 
+import java.lang.reflect.Field;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -76,6 +80,30 @@ public class CustomBettingView extends LinearLayout implements Observer{
 
     }
 
+    private void setNumberPickerTextColor(NumberPicker numberPicker, int color) {
+
+        try {
+            Field selectorWheelPaintField = numberPicker.getClass()
+                    .getDeclaredField("mSelectorWheelPaint");
+            selectorWheelPaintField.setAccessible(true);
+            ((Paint) selectorWheelPaintField.get(numberPicker)).setColor(color);
+        } catch (NoSuchFieldException e) {
+            Log.w("setNumberPickerTextColor", e);
+        } catch (IllegalAccessException e) {
+            Log.w("setNumberPickerTextColor", e);
+        } catch (IllegalArgumentException e) {
+            Log.w("setNumberPickerTextColor", e);
+        }
+
+        // this below block of code makes sure the current selected number is also coloured
+        final int count = numberPicker.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = numberPicker.getChildAt(i);
+            if (child instanceof EditText)
+                ((EditText) child).setTextColor(color);
+        }
+    }
+
     private void createPlaceBetButton(){
         removeAllViewsInLayout();
 
@@ -87,6 +115,10 @@ public class CustomBettingView extends LinearLayout implements Observer{
         }
 
         final NumberPicker numberPicker = new NumberPicker(this.getContext());
+
+        // sets colour of numberPicker text
+        this.setNumberPickerTextColor(numberPicker, Color.GREEN);
+
         numberPicker.setMinValue(3);
         if(user.getChips().getCurrentBalance() < 3){
             numberPicker.setMaxValue(3);
@@ -103,6 +135,20 @@ public class CustomBettingView extends LinearLayout implements Observer{
         numberPicker.setLayoutParams(layoutParamsNumberPicker);
 
         this.addView(numberPicker);
+
+//        numberPicker.setOnScrollListener(new NumberPicker.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChange(NumberPicker numberPicker, int i) {
+//                // sets colour of numberPicker text
+//                final int count = numberPicker.getChildCount();
+//                for(int j = 0; j < count; j++){
+//                    View child = numberPicker.getChildAt(j);
+//                    if(child instanceof EditText)
+//                        ((EditText)child).setTextColor(Color.GREEN);
+//                }
+//                numberPicker.invalidate();
+//            }
+//        });
 
 
         final Button okButton = new Button(this.getContext());

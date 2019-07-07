@@ -236,7 +236,8 @@ public class MenuActivity extends AppCompatActivity {
 ////                        e.printStackTrace();
 ////                    }
 
-                    Bitmap userPictureBitmap = loadImageBitmap(imageFilePath);
+//                    Bitmap userPictureBitmap = loadImageBitmap(imageFilePath);
+                    Bitmap userPictureBitmap = loadImageFileAsDecodedBitmap(new File(imageFilePath));
 
                     String userNickName = cursor.getString(
                             cursor.getColumnIndexOrThrow(
@@ -266,7 +267,7 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    public Bitmap loadImageBitmap(String name){
+    private Bitmap loadImageBitmap(String name){
         Bitmap bitmap = null;
         try{
             Thread.sleep(500);
@@ -276,6 +277,34 @@ public class MenuActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    // Decodes image and scales it to reduce memory consumption
+    private Bitmap loadImageFileAsDecodedBitmap(File f) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=70; // what does altering this value do?
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "issue loading file as bitmap and decoding ==== " + e);
+        }
+        return null;
     }
 
     @Override
