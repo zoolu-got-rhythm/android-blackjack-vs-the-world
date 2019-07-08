@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.slurp.blackjackandroid.R;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -24,7 +25,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
         public ImageView mImageView;
         public TextView mUserNameTextView, mUserRankTextView;
         public ViewGroup userNameContainerView;
-        public SpeechScrollerView mSpeechScrollerView;
+        public SpeechScrollerView mSpeechScrollerViewUserName, mSpeechScrollerViewUserTime;
 
         public ScoreViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -36,8 +37,11 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
             this.userNameContainerView = itemView.findViewById(R.id.username_container);
 
 
-            this.mSpeechScrollerView = new SpeechScrollerView(context);
-            this.userNameContainerView.addView(this.mSpeechScrollerView);
+            this.mSpeechScrollerViewUserName = new SpeechScrollerView(context);
+            this.userNameContainerView.addView(this.mSpeechScrollerViewUserName);
+
+            this.mSpeechScrollerViewUserTime = new SpeechScrollerView(context);
+            this.userNameContainerView.addView(this.mSpeechScrollerViewUserTime);
         }
     }
 
@@ -68,7 +72,8 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
 //        viewHolder.mUserNameTextView.setText(scoreListItem.getUserName());
 //        viewHolder.itemView.setHasTransientState(true); // is this needed?
 //        ViewGroup v = (ViewGroup) viewHolder.itemView;
-        viewHolder.mSpeechScrollerView.drawDialogueBox(this.listData.get(i).getUserName(), false);
+        viewHolder.mSpeechScrollerViewUserName.drawDialogueBox(this.listData.get(i).getUserName(), false);
+        viewHolder.mSpeechScrollerViewUserTime.drawDialogueBox(new Date().toString(), false);
 
 
 //        ViewGroup userNameContainerView = v.findViewById(R.id.username_container);

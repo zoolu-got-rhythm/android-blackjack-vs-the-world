@@ -20,8 +20,6 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:background="@color/colorAccent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:padding="5dp">
 
             <ImageView
@@ -41,7 +39,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
                 android:orientation="horizontal">
@@ -51,9 +49,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/limeGreen"
+                    android:layout_alignParentLeft="true"
                     android:text="#5"
-                    android:textSize="10sp" />
-            </LinearLayout>
+                    android:textStyle="bold"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_alignParentRight="true"
+                    android:text="when: x:x:x"
+                    />
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/username_container"

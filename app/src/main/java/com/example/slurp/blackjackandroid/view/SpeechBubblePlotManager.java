@@ -99,36 +99,51 @@ public class SpeechBubblePlotManager {
         // draw from top-left to bottom-left along y axis
 
 
-        int spacesForLeft = takeNumberAndIncrementByOneIfEvenOrReturnOriginal(specifiedSpacesToPlotOnLeftSide);
+        if(specifiedSpacesToPlotOnLeftSide > 0){
+            int spacesForLeft = takeNumberAndIncrementByOneIfEvenOrReturnOriginal(specifiedSpacesToPlotOnLeftSide);
 
-        // edge case if 1
-        if(spacesForLeft == 1){
-            pointsArray.add(new CustomPoint(originPoint.getX() - borderRadius,
-                    (originPoint.getY() + borderRadius) + heightMinusBorderRadius));
+            // edge case if 1
+            if(spacesForLeft == 1){
+                pointsArray.add(new CustomPoint(originPoint.getX() - borderRadius,
+                        (originPoint.getY() + borderRadius) + heightMinusBorderRadius));
 
-            pointsArray.add(new CustomPoint(originPoint.getX() - (borderRadius + speechTriangleWidth),
-                    (originPoint.getY() + borderRadius) + (heightMinusBorderRadius / 2)));
+                pointsArray.add(new CustomPoint(originPoint.getX() - (borderRadius + speechTriangleWidth),
+                        (originPoint.getY() + borderRadius) + (heightMinusBorderRadius / 2)));
 
-            pointsArray.add(new CustomPoint(originPoint.getX() - borderRadius,
-                    originPoint.getY() + borderRadius));
+                pointsArray.add(new CustomPoint(originPoint.getX() - borderRadius,
+                        originPoint.getY() + borderRadius));
 
-            lastPoint = new CustomPoint(originPoint.getX() - borderRadius,
-                    originPoint.getY() + borderRadius);
+                lastPoint = new CustomPoint(originPoint.getX() - borderRadius,
+                        originPoint.getY() + borderRadius);
 
-        }else{
-            for(int i = spacesForLeft; i >= 0; i--){
-                CustomPoint currentPoint = new CustomPoint(originPoint.getX() - borderRadius,
-                        (originPoint.getY() + borderRadius) + (i * (heightMinusBorderRadius / spacesForLeft)));
+            }else{
+                for(int i = spacesForLeft; i >= 0; i--){
+                    CustomPoint currentPoint = new CustomPoint(originPoint.getX() - borderRadius,
+                            (originPoint.getY() + borderRadius) + (i * (heightMinusBorderRadius / spacesForLeft)));
 
-                if(getMiddleOfOddNumber(spacesForLeft) == i){
-                    pointsArray.add(new CustomPoint(originPoint.getX() - (borderRadius + speechTriangleWidth),
-                            (originPoint.getY() + borderRadius) + (i * (heightMinusBorderRadius / spacesForLeft))));
-                }else{
-                    pointsArray.add(currentPoint);
+                    if(getMiddleOfOddNumber(spacesForLeft) == i){
+                        pointsArray.add(new CustomPoint(originPoint.getX() - (borderRadius + speechTriangleWidth),
+                                (originPoint.getY() + borderRadius) + (i * (heightMinusBorderRadius / spacesForLeft))));
+                    }else{
+                        pointsArray.add(currentPoint);
+                    }
+
+                    if(i == 0)
+                        lastPoint = currentPoint;
                 }
+            }
+        }else{
+            for(int i = spacesBetweenPoints / 2; i >= 0; i--){
+                CustomPoint currentPoint = new CustomPoint(
+                        originPoint.getX() + widthMinusBorderRadius - borderRadius,
+                        originPoint.getY() + ((borderRadius) + (i * yDistance))
+                );
 
-                if(i == 0)
+                pointsArray.add(currentPoint);
+                if(i == 0){
+//                console.log("hit 2");
                     lastPoint = currentPoint;
+                }
             }
         }
 
