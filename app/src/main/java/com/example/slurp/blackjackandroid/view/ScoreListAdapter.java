@@ -30,7 +30,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
             super(itemView);
             mImageView = itemView.findViewById(R.id.user_picture);
 //            mUserNameTextView = itemView.findViewById(R.id.username);
-//            mUserRankTextView = itemView.findViewById(R.id.rank_number)
+            mUserRankTextView = itemView.findViewById(R.id.user_rank);
 
             // viewGroup is super class/base class of linearLayout I believe
             this.userNameContainerView = itemView.findViewById(R.id.username_container);
@@ -53,9 +53,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.player_score_list_item,
                 viewGroup, false);
 
-
         ScoreViewHolder scoreViewHolder = new ScoreViewHolder(v);
-
         return scoreViewHolder;
     }
 
@@ -63,6 +61,9 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
     public void onBindViewHolder(@NonNull ScoreViewHolder viewHolder, int i) {
         ScoreListItem scoreListItem = this.listData.get(i);
         viewHolder.mImageView.setImageBitmap(scoreListItem.getImageBitmap());
+        viewHolder.mUserRankTextView.setText(Integer.toString(scoreListItem.getUserRankNumber()));
+
+
 //        viewHolder.mUserRankTextView.setText(Integer.toString(scoreListItem.getUserRankNumber()));
 //        viewHolder.mUserNameTextView.setText(scoreListItem.getUserName());
 //        viewHolder.itemView.setHasTransientState(true); // is this needed?

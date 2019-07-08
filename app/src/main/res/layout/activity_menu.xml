@@ -39,7 +39,7 @@
             android:id="@+id/playButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="play" />
+            android:text="play 🃑" />
     </LinearLayout>
 
 </LinearLayout>
