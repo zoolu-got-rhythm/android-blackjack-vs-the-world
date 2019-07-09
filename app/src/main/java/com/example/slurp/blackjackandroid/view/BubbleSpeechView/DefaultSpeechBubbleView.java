@@ -1,11 +1,10 @@
-package com.example.slurp.blackjackandroid.view;
+package com.example.slurp.blackjackandroid.view.BubbleSpeechView;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -14,16 +13,16 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.slurp.blackjackandroid.R;
+import com.example.slurp.blackjackandroid.view.CustomPoint;
+import com.example.slurp.blackjackandroid.view.ResponsiveSizes;
+import com.example.slurp.blackjackandroid.view.ResponsiveSizesFactory;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SpeechScrollerView extends View{
+public class DefaultSpeechBubbleView extends View{
 
     private Handler mHandler;
     private ArrayList<CustomPoint> currentPlot, wigglePlot;
@@ -32,16 +31,35 @@ public class SpeechScrollerView extends View{
     private Timer wiggleTimer;
     private ResponsiveSizes responsiveSizes;
     final float DEVICE_DENSITY_SCALE = getResources().getDisplayMetrics().density; // dpi  0.75, 1.0, 1.5, 2.0
+    private int specifiedSpacesToPlotOnLeftSide = 1;
+    private DrawMode drawAsLinesOrDots = DrawMode.LINES;
+    private Float mSpeechBubbleTextSizeDp;
+    private Float mStartingXPosForBubblePlotDp;
+    private Float mStartingYPosForBubblePlotDp;
+    private Float mSpeechBubbleMarginDp;
 
 
-    public SpeechScrollerView(Context context) {
+    private int mDefaultSpacesBetweenPoints = 8;
+
+    enum DrawMode {
+        LINES,
+        DOTS,
+        NO_BORDER
+    };
+
+    public DefaultSpeechBubbleView(Context context) {
         super(context);
-
         this.mHandler = new Handler();
 
 
         this.responsiveSizes = ResponsiveSizesFactory.getInstance()
                 .createResponsiveSizes(DEVICE_DENSITY_SCALE);
+
+        this.mSpeechBubbleTextSizeDp = this.responsiveSizes.getSpeechBubbleTextSize();
+        this.mStartingXPosForBubblePlotDp = this.responsiveSizes.getStartingXPosForSpeechBubblePlot();
+        this.mStartingYPosForBubblePlotDp = this.responsiveSizes.getStartingYPosForSpeechBubblePlot();
+        this.mSpeechBubbleMarginDp = this.responsiveSizes.getSpeechBubbleMargin();
+
 
         LinearLayout.LayoutParams hintTextViewParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -52,8 +70,41 @@ public class SpeechScrollerView extends View{
 
     @Override
     protected void onDraw(final android.graphics.Canvas canvas) {
-        drawAsLines(canvas);
+        if(this.drawAsLinesOrDots == DrawMode.LINES)
+            drawAsLines(canvas);
+
+        if(this.drawAsLinesOrDots == DrawMode.DOTS)
+            drawAsDots(canvas);
+
         drawFont(canvas);
+    }
+
+    public void setmDefaultSpacesBetweenPoints(int mDefaultSpacesBetweenPoints) {
+        this.mDefaultSpacesBetweenPoints = mDefaultSpacesBetweenPoints;
+    }
+
+    public void setmStartingXPosForBubblePlotDp(Float mStartingXPosForBubblePlotDp) {
+        this.mStartingXPosForBubblePlotDp = mStartingXPosForBubblePlotDp;
+    }
+
+    public void setmStartingYPosForBubblePlotDp(Float mStartingYPosForBubblePlotDp) {
+        this.mStartingYPosForBubblePlotDp = mStartingYPosForBubblePlotDp;
+    }
+
+    public void setmSpeechBubbleMarginDp(Float mSpeechBubbleMarginDp) {
+        this.mSpeechBubbleMarginDp = mSpeechBubbleMarginDp;
+    }
+
+    public void setmSpeechBubbleTextSizeDp(Float mSpeechBubbleTextSizeDp) {
+        this.mSpeechBubbleTextSizeDp = mSpeechBubbleTextSizeDp;
+    }
+
+    public void setPlotToDrawFullBubbleWithNoTriangle() {
+        this.specifiedSpacesToPlotOnLeftSide = 0;
+    }
+
+    public void setDrawAsLinesOrDots(DrawMode drawAsLinesOrDots) {
+        this.drawAsLinesOrDots = drawAsLinesOrDots;
     }
 
     private void drawAsLines(Canvas canvas){
@@ -85,7 +136,7 @@ public class SpeechScrollerView extends View{
     private void drawFont(Canvas canvas){
 
         int marginAndBorderRadius = Math.round(
-                responsiveSizes.getSpeechBubbleMargin() * DEVICE_DENSITY_SCALE
+                this.mSpeechBubbleMarginDp * DEVICE_DENSITY_SCALE
         );
 
         // put in constructor
@@ -94,15 +145,15 @@ public class SpeechScrollerView extends View{
         if(textToDisplay != null){
             Paint paint = new Paint();
             paint.setTypeface(custom_font);
-            paint.setTextSize(this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE); // change to class member
+            paint.setTextSize(this.mSpeechBubbleTextSizeDp * DEVICE_DENSITY_SCALE); // change to class member
             paint.setColor(Color.MAGENTA);
             canvas.drawText(this.textToDisplay,
-                    ((this.responsiveSizes.getStartingXPosForSpeechBubblePlot() - 3) * DEVICE_DENSITY_SCALE) -
+                    ((this.mStartingXPosForBubblePlotDp - 3) * DEVICE_DENSITY_SCALE) -
                             (marginAndBorderRadius * 0.125f) +
                             this.randomTextWiggleOffset,
-                    (this.responsiveSizes.getStartingYPosForSpeechBubblePlot() *
+                    (this.mStartingYPosForBubblePlotDp *
                             DEVICE_DENSITY_SCALE) +
-                            ((this.responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE) / 2) +
+                            ((this.mSpeechBubbleTextSizeDp * DEVICE_DENSITY_SCALE) / 2) +
                             (marginAndBorderRadius * 0.875f) +
                             this.randomTextWiggleOffset,
                     paint);
@@ -114,7 +165,7 @@ public class SpeechScrollerView extends View{
         int transPink = ContextCompat.getColor(getContext(), R.color.transparentPink);
         int transPurple = ContextCompat.getColor(getContext(), R.color.transparentPurple);
 
-        int dotSize = 4;
+        int dotSize = 6;
         if(currentPlot != null){
             final Paint speechBoxOutline = new Paint();
 
@@ -156,15 +207,15 @@ public class SpeechScrollerView extends View{
 
         HashMap<String, Integer> widthAndHeightOfText =
                 this.inferTextSizeOfFontAndMap(customFont,
-                        responsiveSizes.getSpeechBubbleTextSize() * DEVICE_DENSITY_SCALE,
+                        mSpeechBubbleTextSizeDp * DEVICE_DENSITY_SCALE,
                         textToDisplay);
 
         int marginAndBorderRadius = Math.round(
-                responsiveSizes.getSpeechBubbleMargin() * DEVICE_DENSITY_SCALE
+                this.mSpeechBubbleMarginDp * DEVICE_DENSITY_SCALE
         );
 
-        float xDp = responsiveSizes.getStartingXPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE;
-        float yDp = responsiveSizes.getStartingYPosForSpeechBubblePlot() * DEVICE_DENSITY_SCALE;
+        float xDp = this.mStartingXPosForBubblePlotDp * DEVICE_DENSITY_SCALE;
+        float yDp = this.mStartingYPosForBubblePlotDp * DEVICE_DENSITY_SCALE;
 //        float speechBoxHeightDp = widthAndHeightOfText.get("height");
 
         int speechTriangleWidthDp = (Math.round(
@@ -177,9 +228,9 @@ public class SpeechScrollerView extends View{
                 widthAndHeightOfText.get("width") + (marginAndBorderRadius * 1.75f),
                 widthAndHeightOfText.get("height") + (marginAndBorderRadius * 1.75f),
                 marginAndBorderRadius,
-                8,
-                speechTriangleWidthDp,
-                1
+                mDefaultSpacesBetweenPoints, // 8
+                speechTriangleWidthDp, // this param is ignores if 'specifiedSpacesToPlotOnLeftSide' argument is 0
+                this.specifiedSpacesToPlotOnLeftSide // if this param is set to 0 the speech triangle isn't drawn and is ignored
         );
 
         if(this.wiggleTimer == null){

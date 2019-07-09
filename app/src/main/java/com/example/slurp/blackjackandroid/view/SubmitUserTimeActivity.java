@@ -28,6 +28,7 @@ import com.example.slurp.blackjackandroid.services.CameraHelper;
 import com.example.slurp.blackjackandroid.services.InternalImageSaver;
 import com.example.slurp.blackjackandroid.services.SQLiteWallOfFameDbHelper;
 import com.example.slurp.blackjackandroid.services.WallOfFameDbCrudOperations;
+import com.example.slurp.blackjackandroid.utils.DummyUserName;
 
 import java.io.File;
 import java.util.UUID;
@@ -84,7 +85,9 @@ public class SubmitUserTimeActivity extends AppCompatActivity {
                     SQLiteWallOfFameDbHelper dbHelper = new SQLiteWallOfFameDbHelper(getApplicationContext());
 
                     WallOfFameDbCrudOperations.getInstance()
-                            .createRow(dbHelper, "bob", uniqueImageNameId);
+                            .createRow(dbHelper,
+                                    DummyUserName.generate(7),
+                                    uniqueImageNameId);
 
                     dbHelper.close();
 

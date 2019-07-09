@@ -1,4 +1,6 @@
-package com.example.slurp.blackjackandroid.view;
+package com.example.slurp.blackjackandroid.view.BubbleSpeechView;
+
+import com.example.slurp.blackjackandroid.view.CustomPoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,10 +17,10 @@ public class SpeechBubblePlotManager {
     };
 
     public ArrayList<CustomPoint> plotSpeechBubble(CustomPoint originPoint, float width, float height,
-                                                    int borderRadius,
-                                                    int spacesBetweenPoints,
-                                                    int speechTriangleWidth,
-                                                    int specifiedSpacesToPlotOnLeftSide){
+                                                   int borderRadius,
+                                                   int spacesBetweenPoints,
+                                                   int speechTriangleWidth,
+                                                   int specifiedSpacesToPlotOnLeftSide){
         CustomPoint lastPoint = null;
 
         ArrayList<CustomPoint> pointsArray = new ArrayList<>();
@@ -100,6 +102,7 @@ public class SpeechBubblePlotManager {
 
 
         if(specifiedSpacesToPlotOnLeftSide > 0){
+            // this block of code deals with drawing the triangle on the speech bubble on the left side
             int spacesForLeft = takeNumberAndIncrementByOneIfEvenOrReturnOriginal(specifiedSpacesToPlotOnLeftSide);
 
             // edge case if 1
@@ -135,7 +138,7 @@ public class SpeechBubblePlotManager {
         }else{
             for(int i = spacesBetweenPoints / 2; i >= 0; i--){
                 CustomPoint currentPoint = new CustomPoint(
-                        originPoint.getX() + widthMinusBorderRadius - borderRadius,
+                        originPoint.getX() - borderRadius,
                         originPoint.getY() + ((borderRadius) + (i * yDistance))
                 );
 

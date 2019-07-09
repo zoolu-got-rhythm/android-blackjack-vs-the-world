@@ -9,15 +9,12 @@ import android.widget.TextView;
 
 import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
-import com.example.slurp.blackjackandroid.model.blackjack.Player;
-
-import java.util.Observable;
-import java.util.Observer;
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.DefaultSpeechBubbleView;
 
 public class MenuHintView extends LinearLayout {
     private Game model;
     private TextView hintTextView;
-    private SpeechScrollerView speechScrollerView;
+    private DefaultSpeechBubbleView defaultSpeechBubbleView;
 
     public MenuHintView(Context context, String initialTitle) {
         super(context);
@@ -38,15 +35,15 @@ public class MenuHintView extends LinearLayout {
         faceView.setImageResource(R.drawable.tips_man);
 
         this.addView(faceView);
-        this.speechScrollerView = new SpeechScrollerView(getContext());
-        this.addView(this.speechScrollerView);
+        this.defaultSpeechBubbleView = new DefaultSpeechBubbleView(getContext());
+        this.addView(this.defaultSpeechBubbleView);
 
 
 
-        this.speechScrollerView.drawDialogueBox(initialTitle, true);
+        this.defaultSpeechBubbleView.drawDialogueBox(initialTitle, true);
     }
 
-    public SpeechScrollerView getSpeechScrollerView() {
-        return speechScrollerView;
+    public DefaultSpeechBubbleView getDefaultSpeechBubbleView() {
+        return defaultSpeechBubbleView;
     }
 }

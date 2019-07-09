@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,7 +26,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -131,7 +129,7 @@ public class MenuActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }else{
-                                menuHintView.getSpeechScrollerView().drawDialogueBox(
+                                menuHintView.getDefaultSpeechBubbleView().drawDialogueBox(
                                         IntegerToWord.convert(countDown).toUpperCase(), true);
                                 countDown--;
                             }

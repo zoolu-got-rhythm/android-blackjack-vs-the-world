@@ -1,12 +1,12 @@
 package com.example.slurp.blackjackandroid.view;
 
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.SpeechBubblePlotManager;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 public class SpeechBubblePlotManagerTest {
 

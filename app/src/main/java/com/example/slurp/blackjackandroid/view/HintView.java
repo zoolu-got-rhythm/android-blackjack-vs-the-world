@@ -2,7 +2,6 @@ package com.example.slurp.blackjackandroid.view;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 import com.example.slurp.blackjackandroid.R;
 import com.example.slurp.blackjackandroid.model.blackjack.Game;
 import com.example.slurp.blackjackandroid.model.blackjack.Player;
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.DefaultSpeechBubbleView;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -18,7 +18,7 @@ import java.util.Observer;
 public class HintView extends LinearLayout implements Observer{
     private Game model;
     private TextView hintTextView;
-    private SpeechScrollerView speechScrollerView;
+    private DefaultSpeechBubbleView defaultSpeechBubbleView;
 
     public HintView(Context context) {
         super(context);
@@ -54,8 +54,8 @@ public class HintView extends LinearLayout implements Observer{
 
         this.addView(faceView);
 //        this.addView(this.hintTextView);
-        this.speechScrollerView = new SpeechScrollerView(getContext());
-        this.addView(this.speechScrollerView);
+        this.defaultSpeechBubbleView = new DefaultSpeechBubbleView(getContext());
+        this.addView(this.defaultSpeechBubbleView);
     }
 
 
@@ -84,7 +84,7 @@ public class HintView extends LinearLayout implements Observer{
             }
         }
 
-        this.speechScrollerView.drawDialogueBox(hint, true);
+        this.defaultSpeechBubbleView.drawDialogueBox(hint, true);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.example.slurp.blackjackandroid.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,10 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.slurp.blackjackandroid.R;
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.FullyRoundedBubbleView;
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.DefaultSpeechBubbleView;
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.UserRankBubbleView;
+import com.example.slurp.blackjackandroid.view.BubbleSpeechView.UserScoreBubbleView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,25 +31,32 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
 
     public class ScoreViewHolder extends RecyclerView.ViewHolder{
         public ImageView mImageView;
-        public TextView mUserNameTextView, mUserRankTextView;
-        public ViewGroup userNameContainerView;
-        public SpeechScrollerView mSpeechScrollerViewUserName, mSpeechScrollerViewUserTime;
+        public DefaultSpeechBubbleView mDefaultSpeechBubbleViewUserName;
+        public UserRankBubbleView mUserRankBubbleView;
+        public UserScoreBubbleView mUserScoreTimeBubbleView, mUserScoreDateBubbleView;
 
         public ScoreViewHolder(@NonNull View itemView) {
             super(itemView);
+
             mImageView = itemView.findViewById(R.id.user_picture);
-//            mUserNameTextView = itemView.findViewById(R.id.username);
-            mUserRankTextView = itemView.findViewById(R.id.user_rank);
 
             // viewGroup is super class/base class of linearLayout I believe
-            this.userNameContainerView = itemView.findViewById(R.id.username_container);
 
+            this.mDefaultSpeechBubbleViewUserName = new DefaultSpeechBubbleView(context);
+            ViewGroup userNameContainerView = itemView.findViewById(R.id.username_container);
+            userNameContainerView.addView(this.mDefaultSpeechBubbleViewUserName);
 
-            this.mSpeechScrollerViewUserName = new SpeechScrollerView(context);
-            this.userNameContainerView.addView(this.mSpeechScrollerViewUserName);
+            ViewGroup userRankContainerView = itemView.findViewById(R.id.userrank_container);
+            this.mUserRankBubbleView = new UserRankBubbleView(context);
+            userRankContainerView.addView(this.mUserRankBubbleView);
 
-            this.mSpeechScrollerViewUserTime = new SpeechScrollerView(context);
-            this.userNameContainerView.addView(this.mSpeechScrollerViewUserTime);
+            this.mUserScoreTimeBubbleView = new UserScoreBubbleView(context);
+            ViewGroup userScoreContainer = itemView.findViewById(R.id.userscore_score_container);
+            userScoreContainer.addView(this.mUserScoreTimeBubbleView);
+
+            this.mUserScoreDateBubbleView= new UserScoreBubbleView(context);
+            ViewGroup userScoreDateContainer = itemView.findViewById(R.id.userscore_date_container);
+            userScoreDateContainer.addView(this.mUserScoreDateBubbleView);
         }
     }
 
@@ -64,22 +79,24 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
     @Override
     public void onBindViewHolder(@NonNull ScoreViewHolder viewHolder, int i) {
         ScoreListItem scoreListItem = this.listData.get(i);
+
+//        viewHolder.userNameContainerView.setBackgroundColor(i % 2 == 0 ? Color.BLACK : Color.DKGRAY);
         viewHolder.mImageView.setImageBitmap(scoreListItem.getImageBitmap());
-        viewHolder.mUserRankTextView.setText(Integer.toString(scoreListItem.getUserRankNumber()));
 
+        viewHolder.mDefaultSpeechBubbleViewUserName.drawDialogueBox(this.listData.get(i).getUserName(),
 
-//        viewHolder.mUserRankTextView.setText(Integer.toString(scoreListItem.getUserRankNumber()));
-//        viewHolder.mUserNameTextView.setText(scoreListItem.getUserName());
-//        viewHolder.itemView.setHasTransientState(true); // is this needed?
-//        ViewGroup v = (ViewGroup) viewHolder.itemView;
-        viewHolder.mSpeechScrollerViewUserName.drawDialogueBox(this.listData.get(i).getUserName(), false);
-        viewHolder.mSpeechScrollerViewUserTime.drawDialogueBox(new Date().toString(), false);
+                false);
+        viewHolder.mUserScoreTimeBubbleView.drawDialogueBox("01:05:45",
+                false);
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        String formattedDate = dateFormat.format(new Date());
+        viewHolder.mUserScoreDateBubbleView.drawDialogueBox(formattedDate, false);
 
-//        ViewGroup userNameContainerView = v.findViewById(R.id.username_container);
-
-
-
+        viewHolder.mUserRankBubbleView.drawDialogueBox(
+                '#' + Integer.toString(scoreListItem.getUserRankNumber()),
+                false
+        );
 
         Log.d("scoreListAdapter", "onBindViewHolder: " + i);
 
@@ -96,8 +113,7 @@ public class ScoreListAdapter extends RecyclerView.Adapter<ScoreListAdapter.Scor
     public void onViewDetachedFromWindow(@NonNull ScoreViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
 //        holder.mSpeechScrollerView.stopDrawDialogueBox();
-        Log.d("scoreListAdapter", "container view children size: " +
-            holder.userNameContainerView.getChildCount());
+//            holder.userNameContainerView.getChildCount());
 //        if(holder.userNameContainerView.getChildCount() > 0)
 //            holder.userNameContainerView.removeViewAt(0);
 //        if(holder.userNameContainerView.getChildCount() > 0)
